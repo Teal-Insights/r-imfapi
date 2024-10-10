@@ -11,3 +11,5 @@ gh repo create Teal-Insights/newpackagename --private --source=. --remote=upstre
 ```
 
 Find and replace all placeholders 'packagename', 'packagetitle', 'packagedescription', and 'packagelicense' with the appropriate values for your package.
+
+Members of the Teal Insights organization can use the command-line tool [RpackageCreator](https://github.com/Teal-Insights/RpackageCreator) to automate this workflow.
