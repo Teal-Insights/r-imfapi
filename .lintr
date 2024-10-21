@@ -1,0 +1,3 @@
+linters: linters_with_defaults()
+encoding: "UTF-8"
+exclusions: c("renv", "pkgdown", "docs", "pkgdown.yml")

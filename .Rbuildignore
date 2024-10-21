@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^packagename\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
@@ -5,3 +7,5 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^\.lintr$
+^codecov\.yml$
