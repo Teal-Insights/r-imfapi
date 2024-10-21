@@ -2,7 +2,7 @@ Package: packagename
 Title: packagetitle
 Version: 0.0.0.1
 Authors@R: 
-    c(person("Teal Insights", role = c("aut", "cre", "cph")))
+    c(person("Teal Insights", email = "lte@tealinsights.com", role = c("aut", "cre", "cph")))
 Description: packagedescription
 License: packagelicense
 Encoding: UTF-8
