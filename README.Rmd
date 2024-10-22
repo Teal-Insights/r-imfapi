@@ -2,6 +2,8 @@
 output: github_document
 ---
 
+<a href="https://teal-insights.github.io/packagename"><img src="man/figures/logo.png" align="right" height="40" alt="packagename website" /></a>
+
 # Teal Insights R Package Template
 
 <!-- badges: start -->
