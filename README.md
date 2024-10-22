@@ -1,4 +1,6 @@
 
+<a href="https://teal-insights.github.io/packagename"><img src="man/figures/logo.png" align="right" height="40" alt="packagename website" /></a>
+
 # Teal Insights R Package Template
 
 <!-- badges: start -->
@@ -26,7 +28,7 @@ command-line tool
 create a new package from this template. See the README in that
 repository for instructions.
 
-Other users can clone this repository with
+For manual setup, clone this repository with
 `git clone https://github.com/Teal-Insights/RpackageTemplate.git newpackagename`.
 Navigate into the project folder and disconnect your cloned repository
 from the template repository:
