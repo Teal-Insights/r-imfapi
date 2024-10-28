@@ -61,6 +61,7 @@ renv::restore()
 
 - `usethis::use_package(package)` adds the named package to DESCRIPTION dependencies
 - `usethis::use_dev_package(package, type="Suggests")` adds a development dependency (won’t be installed for end-users)
+- `pak::pkg_install("github::username/package")` to add a Github dependency (since `usethis::use_package(package, remote="github::username/package")` seems not to work, even though it should)
 - `usethis::use_import_from(package, fun=)` adds a single function import to the roxygen2 docs
 
 ### Install and update dependencies
