@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^packagename\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
@@ -5,5 +7,10 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+<<<<<<< HEAD
 ^LICENSE\.md$
 ^LICENSE$
+=======
+^\.lintr$
+^codecov\.yml$
+>>>>>>> 6fcd51cf2e4787f279457da7482f7afe7a463f65
