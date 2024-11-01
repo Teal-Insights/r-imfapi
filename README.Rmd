@@ -101,12 +101,13 @@ renv::restore()
 
 ### Increment Version
 
-`usethis::use_version(which=NULL,push=NULL)` updates your package's version number in DESCRIPTION and commits the change.
+`usethis::use_version(which=NULL,push=NULL)` updates your package’s version number in DESCRIPTION and commits the change.
+
 - `which`: Controls which part of the version number to increment
-  - "major": First number (0.0.1 -> 1.0.0)
-  - "minor": Second number (0.0.1 -> 0.1.0)
-  - "patch": Third number (0.0.1 -> 0.0.2)
-  - "dev": Adds development suffix (0.0.1 -> 0.0.1.9000)
+  - “major”: First number (0.0.1 -\> 1.0.0)
+  - “minor”: Second number (0.0.1 -\> 0.1.0)
+  - “patch”: Third number (0.0.1 -\> 0.0.2)
+  - “dev”: Adds development suffix (0.0.1 -\> 0.0.1.9000)
 - `push`: When TRUE, automatically pushes the version bump commit to remote
 
 ### CRAN Submission
