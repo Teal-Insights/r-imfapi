@@ -1,0 +1,1 @@
+data_url <- "data/{context}/{agencyID}/{resourceID}/{version}/{key}"

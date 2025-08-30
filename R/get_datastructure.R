@@ -1,0 +1,1 @@
+structure_url <- "structure/{structureType}/{agencyID}/{resourceID}/{version}"
