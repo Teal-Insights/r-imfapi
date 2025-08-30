@@ -11,14 +11,12 @@ coverage](https://codecov.io/gh/Teal-Insights/RpackageTemplate/graph/badge.svg)]
 <!-- badges: end -->
 
 This repository is a template repository for creating a Teal Insights R
-package. It includes renv for dependency management, testthat for tests,
-lintr for linting, and pkgdown for building a documentation website and
-publishing it to Github Pages.
+package. It includes testthat for tests, lintr for linting, and pkgdown
+for building a documentation website and publishing it to Github Pages.
 
 ## Prerequisites
 
 - [R](https://www.r-project.org/) (\>= 4.4.1)
-- [renv](https://rstudio.github.io/renv/articles/renv.html) (\>= 1.0.11)
 - [Git](https://git-scm.com/)
 
 ## Setup
@@ -60,7 +58,7 @@ gh repo create {your-github-username}/{newpackagename} --private --source=. --pu
 Open an R terminal in the project folder and install the dependencies:
 
 ``` r
-renv::restore()
+pak::pkg_install()
 ```
 
 ## Development Workflow
@@ -88,14 +86,8 @@ renv::restore()
 
 ### Install and update dependencies
 
-- `renv::init()` sets up the project’s file system for dependency
-  management with renv
-- `renv::install()` installs all dependencies listed in DESCRIPTION,
+- `pak::pkg_install()` installs all dependencies listed in DESCRIPTION,
   *including Suggests/development dependencies*
-- `renv::snapshot()` regenerates the lockfile to match currently
-  installed dependencies, *excluding Suggests/development dependencies*
-- `renv::update()` updates all package dependencies to latest versions
-- `renv::restore()` installs all dependencies declared in the lockfile
 
 ### Add Data
 

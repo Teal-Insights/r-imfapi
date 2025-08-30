@@ -11,10 +11,8 @@ RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0),
     devtools (>= 2.4.5),
-    lintr (>= 3.1.2)
+    lintr (>= 3.1.2),
+    rmarkdown (>= 2.22)
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/packagename, https://github.com/Teal-Insights/packagename
 BugReports: https://github.com/Teal-Insights/packagename/issues
-Remotes:
-    r-lib/devtools,
-    r-lib/lintr
