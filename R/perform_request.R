@@ -3,24 +3,34 @@
 #'
 perform_request <- function(
   resource,
-  per_page = 15000L,
   progress = FALSE,
   max_tries = 10L
   # TODO: Cache control pass-through argument here?
 ) {
   # TODO: Argument validation here?
 
-  base_url <- "https://api.imf.org/external/sdmx/3.0"
+  base_url <- "https://api.imf.org/external/sdmx/3.0/"
 
-  # Create and execute the request
-  # TODO: add retry
-  response <- httr2::request(paste0(base_url, resource)) |>
+  # Create the request
+  request <- httr2::request(base_url) |>
+    httr2::req_url_path_append(resource) |>
     httr2::req_headers(
       "Accept" = "application/json",
-      "User-Agent" = "imf/0.0.0.1 R client"
+      "User-Agent" = "imf R package (https://github.com/teal-insights/r-imf)"
     ) |>
     httr2::req_cache(tempdir()) |>
+    httr2::req_retry(max_tries = max_tries)
+
+  # Execute the request
+  response <- request |>
     httr2::req_perform()
 
-  return(response)
+  # Check for status error
+  if (httr2::resp_status(response) >= 400) {
+    stop("Request failed with status ", httr2::resp_status(response))
+  }
+
+  body <- httr2::resp_body_json(response)
+
+  body
 }
