@@ -5,15 +5,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>r-imf • imf</title>
+<title>r-imfapi • imfapi</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="r-imf">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="r-imfapi">
 <meta name="description" content="R SDK for working with economic data from the International Monetary Fund's SDMX 3.0 Data API">
 <meta property="og:description" content="R SDK for working with economic data from the International Monetary Fund's SDMX 3.0 Data API">
-<meta property="og:image" content="https://teal-insights.github.io/r-imf/logo.png">
+<meta property="og:image" content="https://teal-insights.github.io/r-imfapi/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +21,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">imf</a>
+    <a class="navbar-brand me-2" href="index.html">imfapi</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.1</small>
 
@@ -38,7 +38,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/Teal-Insights/r-imf/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/Teal-Insights/r-imfapi/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -48,7 +48,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="imf">imf<a class="anchor" aria-label="anchor" href="#imf"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="imfapi">imfapi<a class="anchor" aria-label="anchor" href="#imfapi"></a>
 </h1>
 </div>
 <!-- badges: start -->
@@ -57,8 +57,8 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/Teal-Insights/r-imf/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/Teal-Insights/r-imf/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/Teal-Insights/r-imfapi/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/Teal-Insights/r-imfapi/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -74,7 +74,7 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing imf</a></li>
+<li><a href="authors.html#citation">Citing imfapi</a></li>
 </ul>
 </div>
 
@@ -88,8 +88,8 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/Teal-Insights/r-imf/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Teal-Insights/r-imf/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/Teal-Insights/r-imf" class="external-link"><img src="https://codecov.io/gh/Teal-Insights/r-imf/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/Teal-Insights/r-imfapi/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Teal-Insights/r-imfapi/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/Teal-Insights/r-imfapi" class="external-link"><img src="https://codecov.io/gh/Teal-Insights/r-imfapi/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 

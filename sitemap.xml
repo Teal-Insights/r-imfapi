@@ -1,8 +1,9 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>https://teal-insights.github.io/r-imf/404.html</loc></url>
-<url><loc>https://teal-insights.github.io/r-imf/LICENSE.html</loc></url>
-<url><loc>https://teal-insights.github.io/r-imf/authors.html</loc></url>
-<url><loc>https://teal-insights.github.io/r-imf/index.html</loc></url>
-<url><loc>https://teal-insights.github.io/r-imf/reference/index.html</loc></url>
+<url><loc>https://teal-insights.github.io/r-imfapi/404.html</loc></url>
+<url><loc>https://teal-insights.github.io/r-imfapi/LICENSE.html</loc></url>
+<url><loc>https://teal-insights.github.io/r-imfapi/authors.html</loc></url>
+<url><loc>https://teal-insights.github.io/r-imfapi/index.html</loc></url>
+<url><loc>https://teal-insights.github.io/r-imfapi/reference/imf_get_datasets.html</loc></url>
+<url><loc>https://teal-insights.github.io/r-imfapi/reference/index.html</loc></url>
 </urlset>
 
