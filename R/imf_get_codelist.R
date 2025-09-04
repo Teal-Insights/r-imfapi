@@ -4,6 +4,6 @@
 
 get_codelist <- function(resource_id) {
   codelist_url <- sprintf("structure/codelist/IMF.STA/%s/+", resource_id)
-  body <- perform_request(codelist_url)
+  body <- imf_perform_request(codelist_url)
   body
 }

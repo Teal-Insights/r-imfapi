@@ -1,7 +1,7 @@
 #' @keywords internal
 #' @noRd
 #'
-perform_request <- function(
+imf_perform_request <- function(
   resource,
   progress = FALSE,
   max_tries = 10L
@@ -16,7 +16,9 @@ perform_request <- function(
     httr2::req_url_path_append(resource) |>
     httr2::req_headers(
       "Accept" = "application/json",
-      "User-Agent" = "imf R package (https://github.com/teal-insights/r-imf)"
+      "User-Agent" = (
+        "imfapi R package (https://github.com/teal-insights/r-imfapi)"
+      )
     ) |>
     httr2::req_cache(tempdir()) |>
     httr2::req_retry(max_tries = max_tries)
@@ -27,7 +29,7 @@ perform_request <- function(
 
   # Check for status error
   if (httr2::resp_status(response) >= 400) {
-    stop("Request failed with status ", httr2::resp_status(response))
+    cli::cli_abort("Request failed with status {httr2::resp_status(response)}")
   }
 
   body <- httr2::resp_body_json(response)

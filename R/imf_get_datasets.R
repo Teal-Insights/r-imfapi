@@ -1,7 +1,7 @@
-#' List available IMF datasets
+#' Get dataflow definitions for aLL available IMF datasets
 #'
-#' Retrieves all available datasets from the SDMX dataflow endpoint and
-#' returns their ids and names.
+#' Retrieves and returns all available dataflow definitions from the SDMX
+#' dataflow endpoint.
 #'
 #' @param progress Logical; whether to show progress.
 #' @param max_tries Integer; maximum retry attempts.
@@ -19,8 +19,8 @@
 #' list_datasets()
 #' }
 #' @export
-list_datasets <- function(progress = FALSE, max_tries = 10L) {
-  body <- perform_request(
+imf_get_datasets <- function(progress = FALSE, max_tries = 10L) {
+  body <- imf_perform_request(
     resource = "structure/dataflow/IMF.STA/*/+",
     progress = progress,
     max_tries = max_tries
@@ -37,9 +37,12 @@ list_datasets <- function(progress = FALSE, max_tries = 10L) {
       description = dataflow$description[[1]],
       version = dataflow$version[[1]],
       structure = dataflow$structure[[1]],
-      last_updated = which(
-        sapply(dataflow$annotations, function(x) "lastUpdatedAt" %in% x$id)
-      )[[1]]$value[[1]],
+      last_updated = dataflow$annotations[[which(
+        vapply(
+          dataflow$annotations,
+          function(x) "lastUpdatedAt" %in% x$id, logical(1)
+        )
+      )]]$value[[1]],
       stringsAsFactors = FALSE
     )
   })

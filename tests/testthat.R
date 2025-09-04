@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(imf)
+library(imfapi)
 
-test_check("imf")
+test_check("imfapi")

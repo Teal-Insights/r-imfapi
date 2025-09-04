@@ -1,6 +1,6 @@
 ^renv$
 ^renv\.lock$
-^imf\.Rproj$
+^imfapi\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^_pkgdown\.yml$

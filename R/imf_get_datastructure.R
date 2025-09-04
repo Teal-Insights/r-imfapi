@@ -8,7 +8,7 @@
 get_datastructure <- function(resource_id) {
   # TODO: query by dataset ID: resource ID == DSD_ + dataset ID (I think)
   structure_url <- sprintf("structure/datastructure/IMF.STA/%s/+", resource_id)
-  body <- perform_request(structure_url)
+  body <- imf_perform_request(structure_url)
   # TODO: extract and return a usable dataframe with dimensions
   body
 }

@@ -1,5 +1,5 @@
-Package: imf
-Title: r-imf
+Package: imfapi
+Title: r-imfapi
 Version: 0.0.0.1
 Authors@R:
     c(person("Teal Insights", email = "lte@tealinsights.com", role = c("aut", "cre", "cph")))
@@ -9,12 +9,15 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
+    cli,
     dplyr (>= 1.1.2)
 Suggests:
     testthat (>= 3.0.0),
     devtools (>= 2.4.5),
     lintr (>= 3.1.2),
-    rmarkdown (>= 2.22)
+    rmarkdown (>= 2.22),
+    knitr,
+    stringr
 Config/testthat/edition: 3
-URL: https://teal-insights.github.io/r-imf, https://github.com/Teal-Insights/r-imf
-BugReports: https://github.com/Teal-Insights/r-imf/issues
+URL: https://teal-insights.github.io/r-imfapi, https://github.com/Teal-Insights/r-imfapi
+BugReports: https://github.com/Teal-Insights/r-imfapi/issues
