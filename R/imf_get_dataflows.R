@@ -16,20 +16,23 @@
 #' )
 #' @examples
 #' \dontrun{
-#' list_datasets()
+#' imf_get_dataflows()
 #' }
 #' @export
-imf_get_datasets <- function(progress = FALSE, max_tries = 10L) {
+imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
   body <- imf_perform_request(
-    resource = "structure/dataflow/IMF.STA/*/+",
+    resource = "structure/dataflow/IMF.STA/*/+", # '+' = latest stable version
     progress = progress,
-    max_tries = max_tries
+    max_tries = max_tries,
+    cache = cache
   )
 
-  dataflows <- tryCatch(body[["data"]][["dataflows"]], error = function(e) NULL)
+  raw_dataflows <- tryCatch(
+    body[["data"]][["dataflows"]], error = function(e) NULL
+  )
 
   # Extract core metadata
-  datasets <- purrr::map_dfr(dataflows, function(dataflow) {
+  dataflows <- purrr::map_dfr(raw_dataflows, function(dataflow) {
     # Core required fields
     data.frame(
       id = dataflow$id[[1]],
@@ -47,5 +50,5 @@ imf_get_datasets <- function(progress = FALSE, max_tries = 10L) {
     )
   })
 
-  datasets
+  dataflows
 }
