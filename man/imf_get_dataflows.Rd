@@ -10,6 +10,10 @@ imf_get_dataflows(progress = FALSE, max_tries = 10L, cache = TRUE)
 \item{progress}{Logical; whether to show progress.}
 
 \item{max_tries}{Integer; maximum retry attempts.}
+
+\item{cache}{Logical; whether to cache the request.}
+
+\item{resource}{Character; the resource to retrieve.}
 }
 \value{
 tibble::tibble(

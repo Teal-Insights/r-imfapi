@@ -51,10 +51,14 @@ imf_get_dataflows() |>
 ### Get datastructure dimensions
 
 ```{r}
-imf_get_datastructure("GFS") |>
-  head() |>
-  # Note: We use a custom helper function to truncate long strings in columns
-  truncate_text(max_chars = 10) |>
+imf_get_datastructure("GFS", include_time = TRUE, include_measures = TRUE) |>
+  knitr::kable()
+```
+
+### Get codelists for dimensions we want to filter on
+
+```{r}
+imf_get_codelists(c("FREQUENCY", "TIME_PERIOD")) |>
   knitr::kable()
 ```
 

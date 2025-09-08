@@ -4,17 +4,13 @@
 #' @param progress Logical; whether to show progress.
 #' @param max_tries Integer; maximum retry attempts.
 #' @param cache Logical; whether to cache the request.
+#' @param include_time Logical; whether to include time dimensions.
+#' @param include_measures Logical; whether to include measure dimensions.
 #'
 #' @return tibble::tibble(
 #'   dimension_id = character(),
-#'   order = integer(),
-#'   concept_id = character(),
-#'   concept_name = character(),
-#'   role = character(),
-#'   codelist_id = character(),
-#'   codelist_agency = character(),
-#'   representation_type = character(),
-#'   stringsAsFactors = FALSE
+#'   type = character(),
+#'   position = integer()
 #' )
 #'
 #' @examples
@@ -26,12 +22,30 @@ imf_get_datastructure <- function(
   dataflow_id,
   progress = FALSE,
   max_tries = 10L,
-  cache = TRUE
+  cache = TRUE,
+  include_time = FALSE,
+  include_measures = FALSE
 ) {
   # DSD resource id is "DSD_" + dataflow_id
   structure_path <- sprintf(
     "structure/datastructure/IMF.STA/DSD_%s/+", dataflow_id
   )
+
+  # Argument validation
+  if (
+    !is.logical(include_time) || length(include_time) != 1L ||
+      is.na(include_time)
+  ) {
+    cli::cli_abort("{.arg include_time} must be a single non-missing logical.")
+  }
+  if (
+    !is.logical(include_measures) || length(include_measures) != 1L ||
+      is.na(include_measures)
+  ) {
+    cli::cli_abort(
+      "{.arg include_measures} must be a single non-missing logical."
+    )
+  }
 
   # Request the datastructure and get the components
   body <- imf_perform_request(
@@ -48,16 +62,35 @@ imf_get_datastructure <- function(
   # This is necessary because tibble drops rows with zero-length lists
   dimensions <- purrr::map_dfr(
     components[["dimensionList"]][["dimensions"]], function(x) {
-      x <- purrr::modify(x, function(v) {
-        if (is.list(v)) {
-          if (length(v) == 0) list(NULL) else list(v)
-        } else {
-          v
-        }
-      })
-      tibble::as_tibble(x)
+      tibble::tibble(
+        dimension_id = x$id,
+        type = x$type,
+        position = x$position
+      )
     }
   )
+  if (isTRUE(include_time)) {
+    dimensions <- dplyr::bind_rows(dimensions, purrr::map_dfr(
+      components[["dimensionList"]][["timeDimensions"]], function(x) {
+        tibble::tibble(
+          dimension_id = x$id,
+          type = x$type,
+          position = x$position
+        )
+      }
+    ))
+  }
+  if (isTRUE(include_measures)) {
+    dimensions <- dplyr::bind_rows(dimensions, purrr::map_dfr(
+      components[["measureList"]][["measures"]], function(x) {
+        tibble::tibble(
+          dimension_id = x$id,
+          type = "Measure",
+          position = x$position
+        )
+      }
+    ))
+  }
 
   dimensions
 }

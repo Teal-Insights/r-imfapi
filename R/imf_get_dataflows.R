@@ -3,8 +3,11 @@
 #' Retrieves and returns all available dataflow definitions from the SDMX
 #' dataflow endpoint.
 #'
+#' @param resource Character; the resource to retrieve.
 #' @param progress Logical; whether to show progress.
 #' @param max_tries Integer; maximum retry attempts.
+#' @param cache Logical; whether to cache the request.
+#'
 #' @return tibble::tibble(
 #'   id = character(),           # e.g., "MFS_IR", "SPE", etc.
 #'   name = character(),         # English name

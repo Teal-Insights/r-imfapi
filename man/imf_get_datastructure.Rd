@@ -8,7 +8,9 @@ imf_get_datastructure(
   dataflow_id,
   progress = FALSE,
   max_tries = 10L,
-  cache = TRUE
+  cache = TRUE,
+  include_time = FALSE,
+  include_measures = FALSE
 )
 }
 \arguments{
@@ -19,18 +21,16 @@ imf_get_datastructure(
 \item{max_tries}{Integer; maximum retry attempts.}
 
 \item{cache}{Logical; whether to cache the request.}
+
+\item{include_time}{Logical; whether to include time dimensions.}
+
+\item{include_measures}{Logical; whether to include measure dimensions.}
 }
 \value{
 tibble::tibble(
 dimension_id = character(),
-order = integer(),
-concept_id = character(),
-concept_name = character(),
-role = character(),
-codelist_id = character(),
-codelist_agency = character(),
-representation_type = character(),
-stringsAsFactors = FALSE
+type = character(),
+position = integer()
 )
 }
 \description{
