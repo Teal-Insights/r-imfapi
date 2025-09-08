@@ -41,7 +41,9 @@
 <span>  <span class="va">dataflow_id</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  max_tries <span class="op">=</span> <span class="fl">10L</span>,</span>
-<span>  cache <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  cache <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  include_time <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  include_measures <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -64,19 +66,21 @@
 <dt id="arg-cache">cache<a class="anchor" aria-label="anchor" href="#arg-cache"></a></dt>
 <dd><p>Logical; whether to cache the request.</p></dd>
 
+
+<dt id="arg-include-time">include_time<a class="anchor" aria-label="anchor" href="#arg-include-time"></a></dt>
+<dd><p>Logical; whether to include time dimensions.</p></dd>
+
+
+<dt id="arg-include-measures">include_measures<a class="anchor" aria-label="anchor" href="#arg-include-measures"></a></dt>
+<dd><p>Logical; whether to include measure dimensions.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>tibble::tibble(
 dimension_id = character(),
-order = integer(),
-concept_id = character(),
-concept_name = character(),
-role = character(),
-codelist_id = character(),
-codelist_agency = character(),
-representation_type = character(),
-stringsAsFactors = FALSE
+type = character(),
+position = integer()
 )</p>
     </div>
 
