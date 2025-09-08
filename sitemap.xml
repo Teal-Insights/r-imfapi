@@ -3,7 +3,8 @@
 <url><loc>https://teal-insights.github.io/r-imfapi/LICENSE.html</loc></url>
 <url><loc>https://teal-insights.github.io/r-imfapi/authors.html</loc></url>
 <url><loc>https://teal-insights.github.io/r-imfapi/index.html</loc></url>
-<url><loc>https://teal-insights.github.io/r-imfapi/reference/imf_get_datasets.html</loc></url>
+<url><loc>https://teal-insights.github.io/r-imfapi/reference/imf_get_dataflows.html</loc></url>
+<url><loc>https://teal-insights.github.io/r-imfapi/reference/imf_get_datastructure.html</loc></url>
 <url><loc>https://teal-insights.github.io/r-imfapi/reference/index.html</loc></url>
 </urlset>
 
