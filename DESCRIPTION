@@ -10,7 +10,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
     cli,
-    dplyr (>= 1.1.2)
+    dplyr (>= 1.1.2),
+    purrr (>= 1.0.0),
+    tibble (>= 3.2.1)
 Suggests:
     testthat (>= 3.0.0),
     devtools (>= 2.4.5),

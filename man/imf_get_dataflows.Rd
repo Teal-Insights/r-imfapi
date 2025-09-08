@@ -12,7 +12,7 @@ imf_get_dataflows(progress = FALSE, max_tries = 10L, cache = TRUE)
 \item{max_tries}{Integer; maximum retry attempts.}
 }
 \value{
-data.frame(
+tibble::tibble(
 id = character(),           # e.g., "MFS_IR", "SPE", etc.
 name = character(),         # English name
 description = character(),  # English description

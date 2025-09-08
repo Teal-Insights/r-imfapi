@@ -21,7 +21,7 @@ imf_get_datastructure(
 \item{cache}{Logical; whether to cache the request.}
 }
 \value{
-data.frame(
+tibble::tibble(
 dimension_id = character(),
 order = integer(),
 concept_id = character(),

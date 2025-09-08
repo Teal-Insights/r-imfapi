@@ -5,7 +5,7 @@
 #'
 #' @param progress Logical; whether to show progress.
 #' @param max_tries Integer; maximum retry attempts.
-#' @return data.frame(
+#' @return tibble::tibble(
 #'   id = character(),           # e.g., "MFS_IR", "SPE", etc.
 #'   name = character(),         # English name
 #'   description = character(),  # English description
@@ -34,7 +34,7 @@ imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
   # Extract core metadata
   dataflows <- purrr::map_dfr(raw_dataflows, function(dataflow) {
     # Core required fields
-    data.frame(
+    tibble::tibble(
       id = dataflow$id[[1]],
       name = dataflow$name[[1]],
       description = dataflow$description[[1]],
