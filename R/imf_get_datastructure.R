@@ -28,7 +28,7 @@ imf_get_datastructure <- function(
 ) {
   # DSD resource id is "DSD_" + dataflow_id
   structure_path <- sprintf(
-    "structure/datastructure/IMF.STA/DSD_%s/+", dataflow_id
+    "structure/datastructure/all/DSD_%s/+", dataflow_id
   )
 
   # Argument validation

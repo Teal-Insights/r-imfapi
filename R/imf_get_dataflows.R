@@ -14,8 +14,7 @@
 #'   description = character(),  # English description
 #'   version = character(),      # e.g., "8.0.1"
 #'   structure = character(),    # DSD reference
-#'   last_updated = character(), # from annotations
-#'   stringsAsFactors = FALSE
+#'   last_updated = character() # from annotations
 #' )
 #' @examples
 #' \dontrun{
@@ -24,7 +23,7 @@
 #' @export
 imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
   body <- imf_perform_request(
-    resource = "structure/dataflow/IMF.STA/*/+", # '+' = latest stable version
+    resource = "structure/dataflow/all/*/+", # '+' = latest stable version
     progress = progress,
     max_tries = max_tries,
     cache = cache
@@ -48,8 +47,7 @@ imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
           dataflow$annotations,
           function(x) "lastUpdatedAt" %in% x$id, logical(1)
         )
-      )]]$value[[1]],
-      stringsAsFactors = FALSE
+      )]]$value[[1]]
     )
   })
 

@@ -45,7 +45,7 @@ imf_get_codelists <- function(
   codelist_ids <- paste0("CL_", dimension_ids)
   # Note: IMF.STA owns dataflows, but IMF owns codelists
   resource_path <- paste0(
-    "structure/codelist/IMF/", paste(codelist_ids, collapse = "+"), "/+"
+    "structure/codelist/all/", paste(codelist_ids, collapse = ","), "/+"
   )
 
   body <- imf_perform_request(

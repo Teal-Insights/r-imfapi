@@ -5,6 +5,7 @@ imf_perform_request <- function(
   resource,
   progress = FALSE,
   base_url = "https://api.imf.org/external/sdmx/3.0/",
+  query_params = NULL,
   max_tries = 10L,
   cache = TRUE
 ) {
@@ -45,6 +46,11 @@ imf_perform_request <- function(
       )
     ) |>
     httr2::req_retry(max_tries = max_tries)
+
+  if (!is.null(query_params)) {
+    request <- request |>
+      httr2::req_url_query(!!!query_params)
+  }
 
   if (isTRUE(cache)) {
     request <- request |>
