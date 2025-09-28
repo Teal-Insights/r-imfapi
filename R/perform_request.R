@@ -1,7 +1,7 @@
 #' @keywords internal
 #' @noRd
 #'
-imf_perform_request <- function(
+perform_request <- function(
   resource,
   progress = FALSE,
   base_url = "https://api.imf.org/external/sdmx/3.0/",

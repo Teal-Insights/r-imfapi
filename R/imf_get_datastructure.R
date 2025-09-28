@@ -48,7 +48,7 @@ imf_get_datastructure <- function(
   }
 
   # Request the datastructure and get the components
-  body <- imf_perform_request(
+  body <- perform_request(
     structure_path,
     progress = progress,
     max_tries = max_tries,

@@ -1,4 +1,4 @@
-## Retrieve codes for one or more dimensions as a tidy tibble (internal)
+#' Retrieve codes for one or more dimensions as a tidy tibble
 #'
 #' Returns a tibble mapping dimensions to their codes and labels by fetching the
 #' corresponding codelists. By convention, codelist IDs are assumed to be
@@ -48,7 +48,7 @@ imf_get_codelists <- function(
     "structure/codelist/all/", paste(codelist_ids, collapse = ","), "/+"
   )
 
-  body <- imf_perform_request(
+  body <- perform_request(
     resource_path, progress = progress, max_tries = max_tries, cache = cache
   )
 

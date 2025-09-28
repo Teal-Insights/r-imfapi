@@ -22,7 +22,7 @@
 #' }
 #' @export
 imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
-  body <- imf_perform_request(
+  body <- perform_request(
     resource = "structure/dataflow/all/*/+", # '+' = latest stable version
     progress = progress,
     max_tries = max_tries,
