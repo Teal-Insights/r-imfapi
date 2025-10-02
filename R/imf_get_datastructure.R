@@ -102,36 +102,27 @@ get_datastructure_components <- function(
     cli::cli_abort("{.arg dataflow_id} must be a non-empty character scalar.")
   }
 
-  # Primary attempt: DSD_ + dataflow_id under all/*
-  dsd_path <- sprintf("structure/datastructure/all/DSD_%s/+", dataflow_id)
+  # Resolve DSD from dataflow structure URN using internal dataflows helper
+  flows <- get_dataflows_components(
+    progress = progress, max_tries = max_tries, cache = cache
+  )
+  flow_row <- flows[flows$id == dataflow_id, , drop = FALSE]
+  if (nrow(flow_row) != 1L) {
+    cli::cli_abort("Dataflow not found or not unique: {dataflow_id}.")
+  }
+  dsd_ref <- parse_datastructure_urn(flow_row$structure[[1]])
+  if (
+    is.na(dsd_ref$agency) || !nzchar(dsd_ref$agency) ||
+      is.na(dsd_ref$id) || !nzchar(dsd_ref$id)
+  ) {
+    cli::cli_abort("Invalid structure URN for dataflow {dataflow_id}.")
+  }
   dsd_body <- perform_request(
-    dsd_path,
+    sprintf("structure/datastructure/%s/%s/+", dsd_ref$agency, dsd_ref$id),
     progress = progress,
     max_tries = max_tries,
     cache = cache
   )
-  if (is.null(dsd_body)) {
-    # Fallback: resolve DSD agency from dataflow
-    df_body <- perform_request(
-      sprintf("structure/dataflow/all/%s/+", dataflow_id),
-      progress = progress,
-      max_tries = max_tries,
-      cache = cache
-    )
-    dsd_urn <- df_body[["data"]][["dataflows"]][[1]][["structure"]]
-    dsd_ref <- parse_datastructure_urn(dsd_urn)
-    if (
-      !is.na(dsd_ref$agency) && nzchar(dsd_ref$agency) &&
-        !is.na(dsd_ref$id) && nzchar(dsd_ref$id)
-    ) {
-      dsd_body <- perform_request(
-        sprintf("structure/datastructure/%s/%s/+", dsd_ref$agency, dsd_ref$id),
-        progress = progress,
-        max_tries = max_tries,
-        cache = cache
-      )
-    }
-  }
 
   dsds <- dsd_body[["data"]][["dataStructures"]]
   if (is.null(dsds) || length(dsds) < 1) {
