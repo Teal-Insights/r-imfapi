@@ -67,11 +67,54 @@ perform_request <- function(
     httr2::req_perform()
 
   # Check for status error
-  if (httr2::resp_status(response) >= 400) {
-    cli::cli_abort("Request failed with status {httr2::resp_status(response)}")
+  status_code <- httr2::resp_status(response)
+  if (status_code >= 400) {
+    body_txt <- httr2::resp_body_string(response)
+    parsed <- NULL
+    msg <- NULL
+    code <- NULL
+    corr <- NULL
+    path <- NULL
+    try({
+      parsed <- jsonlite::fromJSON(body_txt)
+      msg <- parsed$message
+      code <- parsed$code
+      corr <- parsed$correlationId
+      path <- parsed$path
+    }, silent = TRUE)
+    if (!nzchar(msg)) msg <- "HTTP error"
+    detail <- paste0(
+      "status=", status_code,
+      if (!is.null(code)) paste0(" code=", code) else "",
+      if (!is.null(corr)) paste0(" correlationId=", corr) else "",
+      if (!is.null(path)) paste0(" path=", path) else "",
+      " resource=", resource
+    )
+    cli::cli_abort(paste(msg, detail))
   }
 
-  body <- httr2::resp_body_json(response)
+  # Parse successful response; ensure JSON or provide helpful error
+  ct <- httr2::resp_header(response, "content-type")
+  if (!is.null(ct) && grepl("json", ct, ignore.case = TRUE)) {
+    body <- httr2::resp_body_json(response)
+    return(body)
+  }
+
+  # Fallback: attempt JSON parse from text, else show content-type/body snippet
+  body_txt <- httr2::resp_body_string(response)
+  parsed <- NULL
+  ok <- FALSE
+  try({
+    parsed <- jsonlite::fromJSON(body_txt)
+    ok <- TRUE
+  }, silent = TRUE)
+  if (ok) return(parsed)
+
+  preview <- substr(body_txt, 1L, 300L)
+  cli::cli_abort(paste0(
+    "Unexpected content type ", shQuote(ifelse(is.null(ct), "(none)", ct)),
+    ". Expected JSON. Resource=", resource, ". Body preview: ", preview
+  ))
 
   body
 }
