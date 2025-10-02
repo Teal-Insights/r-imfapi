@@ -2,10 +2,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' imf_get_data("GFS", )
+#' imf_get("GFS", )
 #' }
 #' @noRd
-imf_get_data <- function(resource_id, key, context = "TIME_SERIES") {
+imf_get <- function(resource_id, key, context = "TIME_SERIES") {
   # {base_url}/data/{context}/IMF.STA/{resourceID}/+/{key}?dimensionsAtObservation={dimensions_at_observation}&attributes={attributes}&measures={measures}
   data_url <- sprintf("data/%s/all/%s/+/%s", context, resource_id, key)
   body <- perform_request(data_url)

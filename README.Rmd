@@ -67,5 +67,5 @@ imf_get_codelists(c("COUNTRY"), dataflow_id = "GFS") |>
 ### Get data
 
 ```r
-imf_get_data("GFS", "MFS_IR")
+imf_get("GFS", "MFS_IR")
 ```

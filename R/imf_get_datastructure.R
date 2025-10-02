@@ -26,11 +26,6 @@ imf_get_datastructure <- function(
   include_time = FALSE,
   include_measures = FALSE
 ) {
-  # DSD resource id is "DSD_" + dataflow_id
-  structure_path <- sprintf(
-    "structure/datastructure/all/DSD_%s/+", dataflow_id
-  )
-
   # Argument validation
   if (
     !is.logical(include_time) || length(include_time) != 1L ||
@@ -47,16 +42,11 @@ imf_get_datastructure <- function(
     )
   }
 
-  # Request the datastructure and get the components
-  body <- perform_request(
-    structure_path,
+  components <- get_datastructure_components(
+    dataflow_id = dataflow_id,
     progress = progress,
     max_tries = max_tries,
     cache = cache
-  )
-  components <- tryCatch(
-    body[["data"]][["dataStructures"]][[1]][["dataStructureComponents"]],
-    error = function(e) NULL
   )
 
   # This is necessary because tibble drops rows with zero-length lists
@@ -93,4 +83,66 @@ imf_get_datastructure <- function(
   }
 
   dimensions
+}
+
+#' Retrieve raw datastructure components for a dataflow (internal)
+#'
+#' @keywords internal
+#' @noRd
+get_datastructure_components <- function(
+  dataflow_id,
+  progress = FALSE,
+  max_tries = 10L,
+  cache = TRUE
+) {
+  if (
+    !is.character(dataflow_id) || length(dataflow_id) != 1L ||
+      is.na(dataflow_id) || !nzchar(trimws(dataflow_id))
+  ) {
+    cli::cli_abort("{.arg dataflow_id} must be a non-empty character scalar.")
+  }
+
+  # Primary attempt: DSD_ + dataflow_id under all/*
+  dsd_path <- sprintf("structure/datastructure/all/DSD_%s/+", dataflow_id)
+  dsd_body <- perform_request(
+    dsd_path,
+    progress = progress,
+    max_tries = max_tries,
+    cache = cache
+  )
+  if (is.null(dsd_body)) {
+    # Fallback: resolve DSD agency from dataflow
+    df_body <- perform_request(
+      sprintf("structure/dataflow/all/%s/+", dataflow_id),
+      progress = progress,
+      max_tries = max_tries,
+      cache = cache
+    )
+    dsd_urn <- df_body[["data"]][["dataflows"]][[1]][["structure"]]
+    dsd_ref <- parse_datastructure_urn(dsd_urn)
+    if (
+      !is.na(dsd_ref$agency) && nzchar(dsd_ref$agency) &&
+        !is.na(dsd_ref$id) && nzchar(dsd_ref$id)
+    ) {
+      dsd_body <- perform_request(
+        sprintf("structure/datastructure/%s/%s/+", dsd_ref$agency, dsd_ref$id),
+        progress = progress,
+        max_tries = max_tries,
+        cache = cache
+      )
+    }
+  }
+
+  dsds <- dsd_body[["data"]][["dataStructures"]]
+  if (is.null(dsds) || length(dsds) < 1) {
+    cli::cli_abort("No dataStructures found in DSD response for {dataflow_id}.")
+  }
+  components <- dsds[[1]][["dataStructureComponents"]]
+  if (is.null(components)) {
+    cli::cli_abort(
+      "No dataStructureComponents found in DSD for {dataflow_id}."
+    )
+  }
+
+  components
 }

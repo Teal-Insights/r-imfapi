@@ -54,46 +54,13 @@ imf_get_codelists <- function(
   # Normalize inputs
   dimension_ids <- unique(trimws(as.character(dimension_ids)))
 
-  # Fetch DSD
-  dsd_path <- sprintf("structure/datastructure/all/DSD_%s/+", dataflow_id)
-  dsd_body <- perform_request(
-    dsd_path,
+  # Fetch DSD components via helper
+  components <- get_datastructure_components(
+    dataflow_id = dataflow_id,
     progress = progress,
     max_tries = max_tries,
     cache = cache
   )
-  if (is.null(dsd_body)) {
-    # Discover DSD via dataflow
-    df_body <- perform_request(
-      sprintf("structure/dataflow/all/%s/+", dataflow_id),
-      progress = progress,
-      max_tries = max_tries,
-      cache = cache
-    )
-    dsd_urn <- df_body[["data"]][["dataflows"]][[1]][["structure"]]
-    dsd_ref <- parse_datastructure_urn(dsd_urn)
-    if (
-      !is.na(dsd_ref$agency) && nzchar(dsd_ref$agency) &&
-        !is.na(dsd_ref$id) && nzchar(dsd_ref$id)
-    ) {
-      dsd_body <- perform_request(
-        sprintf("structure/datastructure/%s/%s/+", dsd_ref$agency, dsd_ref$id),
-        progress = progress,
-        max_tries = max_tries,
-        cache = cache
-      )
-    }
-  }
-  dsds <- dsd_body[["data"]][["dataStructures"]]
-  if (is.null(dsds) || length(dsds) < 1) {
-    cli::cli_abort("No dataStructures found in DSD response for {dataflow_id}.")
-  }
-  components <- dsds[[1]][["dataStructureComponents"]]
-  if (is.null(components)) {
-    cli::cli_abort(
-      "No dataStructureComponents found in DSD for {dataflow_id}."
-    )
-  }
 
   # Build local map from dimension id -> conceptIdentity and local enumeration
   dims <- c(
