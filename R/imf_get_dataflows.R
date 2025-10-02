@@ -22,6 +22,20 @@
 #' }
 #' @export
 imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
+  df <- get_dataflows_components(
+    progress = progress, max_tries = max_tries, cache = cache
+  )
+  # Hide internal foreign key `structure` from the public API
+  dplyr::select(df, -structure)
+}
+
+#' Retrieve raw dataflows including structure URN (internal)
+#'
+#' @keywords internal
+#' @noRd
+get_dataflows_components <- function(
+  progress = FALSE, max_tries = 10L, cache = TRUE
+) {
   body <- perform_request(
     resource = "structure/dataflow/all/*/+", # '+' = latest stable version
     progress = progress,
@@ -29,18 +43,18 @@ imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
     cache = cache
   )
 
-  raw_dataflows <- tryCatch(
-    body[["data"]][["dataflows"]], error = function(e) NULL
-  )
+  raw_dataflows <- body[["data"]][["dataflows"]]
+  if (is.null(raw_dataflows)) {
+    cli::cli_abort("No dataflows found in response.")
+  }
 
-  # Extract core metadata
-  dataflows <- purrr::map_dfr(raw_dataflows, function(dataflow) {
-    # Core required fields
+  purrr::map_dfr(raw_dataflows, function(dataflow) {
     tibble::tibble(
       id = dataflow$id[[1]],
       name = dataflow$name[[1]],
       description = dataflow$description[[1]],
       version = dataflow$version[[1]],
+      agency = dataflow$agencyID[[1]],
       structure = dataflow$structure[[1]],
       last_updated = dataflow$annotations[[which(
         vapply(
@@ -50,6 +64,4 @@ imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
       )]]$value[[1]]
     )
   })
-
-  dataflows
 }
