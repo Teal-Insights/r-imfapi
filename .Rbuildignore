@@ -8,6 +8,8 @@
 ^pkgdown$
 ^\.github$
 ^LICENSE\.md$
-^LICENSE$
 ^\.lintr$
 ^codecov\.yml$
+^\.cursor$
+^\.vscode$
+^artifacts$

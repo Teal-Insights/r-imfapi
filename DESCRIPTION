@@ -13,7 +13,8 @@ Imports:
     dplyr (>= 1.1.2),
     purrr (>= 1.0.0),
     tibble (>= 3.2.1),
-    httr2 (>= 0.6.0)
+    httr2 (>= 0.6.0),
+    jsonlite (>= 1.8.0)
 Suggests:
     knitr,
     stringr,
