@@ -11,8 +11,6 @@
 #' into a tidy tibble.
 #'
 #' @param dataflow_id Character scalar. The dataflow to query (e.g., "GFS").
-#' @param resource_id Character scalar. The dataset/resource within the
-#'   dataflow (e.g., a table or domain identifier).
 #' @param dimensions Named list mapping dimension IDs to character vectors of
 #'   codes to include. Omitted dimensions are wildcarded in the key. Each
 #'   dimension position in the DSD corresponds to one dot-separated slot in the
@@ -21,15 +19,8 @@
 #'   (e.g., "2000", "2000-Q1", "2000-01").
 #' @param end_period Optional character. Upper bound for time filtering, same
 #'   format as `start_period`.
-#' @param context Character scalar. SDMX data context path segment.
-#'   Common values include "TIME_SERIES", "CROSS_SECTIONAL", and "FLAT".
-#'   Defaults to "TIME_SERIES".
-#' @param attributes Character scalar. Which attribute metadata to include.
-#'   One of "All", "Dataset", "Series", "Observation", or "None".
-#'   Defaults to "None" in practice; exposed here for experimentation.
-#' @param measures Character scalar. Which measures to include when a dataset
-#'   defines multiple measures. Typically "All"; specific measure IDs may be
-#'   supported for some datasets.
+#' The request always uses the SDMX 3.0 `dataflow` context under the hood and
+#' sets `dimensionAtObservation = "TIME_PERIOD"` to request a time-series view.
 #' @param progress Logical; whether to show request progress.
 #' @param max_tries Integer; maximum retry attempts for HTTP requests.
 #' @param cache Logical; whether to enable caching for HTTP requests.
@@ -49,7 +40,6 @@
 #' # Minimal time-series retrieval with COUNTRY filtered
 #' imf_get(
 #'   dataflow_id = "GFS",
-#'   resource_id = "GFS",
 #'   dimensions = list(COUNTRY = c("USA", "CAN")),
 #'   start_period = "2015",
 #'   end_period = "2020"
@@ -58,7 +48,6 @@
 #' # Cross-sectional or flat contexts can be explored if needed
 #' imf_get(
 #'   dataflow_id = "GFS",
-#'   resource_id = "GFS",
 #'   context = "CROSS_SECTIONAL",
 #'   attributes = "Series"
 #' )
@@ -66,13 +55,9 @@
 #' @export
 imf_get <- function(
   dataflow_id,
-  resource_id,
   dimensions = list(),
   start_period = NULL,
   end_period = NULL,
-  context = "TIME_SERIES",
-  attributes = c("All", "Dataset", "Series", "Observation", "None"),
-  measures = c("All", "None"),
   progress = FALSE,
   max_tries = 10L,
   cache = TRUE
@@ -83,12 +68,6 @@ imf_get <- function(
       is.na(dataflow_id) || !nzchar(trimws(dataflow_id))
   ) {
     cli::cli_abort("{.arg dataflow_id} must be a non-empty character scalar.")
-  }
-  if (
-    !is.character(resource_id) || length(resource_id) != 1L ||
-      is.na(resource_id) || !nzchar(trimws(resource_id))
-  ) {
-    cli::cli_abort("{.arg resource_id} must be a non-empty character scalar.")
   }
   if (!is.list(dimensions)) {
     cli::cli_abort("{.arg dimensions} must be a named list.")
@@ -118,20 +97,6 @@ imf_get <- function(
     max_tries = max_tries,
     cache = cache
   )
-  # Determine provider agency from DSD (fallback to "all")
-  dsd_meta <- perform_request(
-    sprintf("structure/datastructure/all/DSD_%s/+", dataflow_id),
-    progress = progress,
-    max_tries = max_tries,
-    cache = cache
-  )
-  provider_agency <- tryCatch(
-    as.character(dsd_meta[["data"]][["dataStructures"]][[1]][["agencyID"]]),
-    error = function(e) NULL
-  )
-  if (is.null(provider_agency) || !nzchar(provider_agency)) {
-    provider_agency <- "all"
-  }
   dims <- components[["dimensionList"]][["dimensions"]]
   time_dims <- components[["dimensionList"]][["timeDimensions"]]
   # Build tibble of all dimensions with position; mark time dims
@@ -175,8 +140,8 @@ imf_get <- function(
   # Build query params
   query <- list(
     dimensionAtObservation = "TIME_PERIOD",
-    attributes = tolower(match.arg(attributes)),
-    measures = tolower(match.arg(measures))
+    attributes = "dsd",
+    measures = "all"
   )
   # Time filter via c[TIME_PERIOD] parameter if provided
   time_filters <- character(0)
@@ -190,31 +155,31 @@ imf_get <- function(
     query[["c[TIME_PERIOD]"]] <- paste(time_filters, collapse = "+")
   }
 
-  # Determine dataflow agency (owner) for the route
-  df_meta <- perform_request(
-    sprintf("structure/dataflow/all/%s/+", dataflow_id),
-    progress = progress,
-    max_tries = max_tries,
-    cache = cache
+  # Determine dataflow agency (owner) using dataflows helper
+  flows <- get_dataflows_components(
+    progress = progress, max_tries = max_tries, cache = cache
   )
-  provider_agency <- tryCatch(
-    as.character(df_meta[["data"]][["dataflows"]][[1]][["agencyID"]]),
-    error = function(e) NULL
-  )
+  flow_row <- flows[flows$id == dataflow_id, , drop = FALSE]
+  if (nrow(flow_row) != 1L) {
+    cli::cli_abort("Dataflow not found or not unique: {dataflow_id}.")
+  }
+  provider_agency <- flow_row$agency[[1]]
   if (is.null(provider_agency) || !nzchar(provider_agency)) {
     provider_agency <- "all"
   }
 
   # Build path and perform request
+  # Build path using SDMX 3.0 dataflow context; layout controlled via query
   data_path <- sprintf(
-    "data/%s/%s/%s/+/%s", context, provider_agency, resource_id, key
+    "data/%s/%s/%s/+/%s", "dataflow", provider_agency, dataflow_id, key
   )
-  body <- perform_request(
+  message <- perform_request(
     data_path,
     progress = progress,
     max_tries = max_tries,
     cache = cache,
     query_params = query
   )
-  body
+  # Parse SDMX JSON message into a tidy tibble
+  parse_imf_sdmx_json(message)
 }

@@ -2,12 +2,11 @@
 % Please edit documentation in R/imf_get_codelists.R
 \name{imf_get_codelists}
 \alias{imf_get_codelists}
-\title{Returns a tibble mapping dimensions to their codes and labels by fetching the
-corresponding codelists. By convention, codelist IDs are assumed to be
-\verb{CL_\{dimension_id\}} for first-pass coverage.}
+\title{Retrieve codes for one or more dimensions as a tidy tibble}
 \usage{
 imf_get_codelists(
   dimension_ids,
+  dataflow_id,
   progress = FALSE,
   max_tries = 10L,
   cache = TRUE
@@ -15,6 +14,9 @@ imf_get_codelists(
 }
 \arguments{
 \item{dimension_ids}{Character vector of dimension IDs (e.g., "COUNTRY").}
+
+\item{dataflow_id}{Character scalar. The dataflow whose datastructure is
+used to resolve each dimension's codelist via its concept scheme reference.}
 
 \item{progress}{Logical; whether to show progress.}
 

@@ -51,14 +51,16 @@ imf_get_dataflows() |>
 ### Get datastructure dimensions
 
 ```{r}
-imf_get_datastructure("GFS", include_time = TRUE, include_measures = TRUE) |>
+imf_get_datastructure(
+  "PPI", include_time = TRUE, include_measures = TRUE
+) |>
   knitr::kable()
 ```
 
 ### Get codelists for dimensions we want to filter on
 
 ```{r}
-imf_get_codelists(c("COUNTRY"), dataflow_id = "GFS") |>
+imf_get_codelists(dimension_ids = c("COUNTRY"), dataflow_id = "PPI") |>
   head() |>
   truncate_text(max_chars = 10) |>
   knitr::kable()
@@ -66,6 +68,10 @@ imf_get_codelists(c("COUNTRY"), dataflow_id = "GFS") |>
 
 ### Get data
 
-```r
-imf_get("GFS", "MFS_IR")
+``` {r}
+imf_get(
+  dataflow_id = "PPI",
+  dimensions = list(FREQUENCY = c("A"), COUNTRY = c("USA", "CAN"))
+) |>
+  head()
 ```
