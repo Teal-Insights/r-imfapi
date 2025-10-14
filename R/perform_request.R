@@ -45,7 +45,8 @@ perform_request <- function(
         "imfapi R package (https://github.com/teal-insights/r-imfapi)"
       )
     ) |>
-    httr2::req_retry(max_tries = max_tries)
+    httr2::req_retry(max_tries = max_tries) |>
+    httr2::req_error(is_error = function(resp) FALSE)
 
   if (!is.null(query_params)) {
     request <- do.call(httr2::req_url_query, c(list(request), query_params))
