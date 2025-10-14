@@ -412,3 +412,37 @@ test_that("unexpected non-JSON content produces informative error", {
     regexp = "Unexpected content type"
   )
 })
+
+test_that("HTTP error with empty message uses default 'HTTP error'", {
+  env <- new.env(parent = emptyenv())
+  env$resp_status <- 500L
+  env$body_string <- jsonlite::toJSON(list(
+    message = "",
+    code = "E500",
+    correlationId = "corr-xyz",
+    path = "/oops"
+  ), auto_unbox = TRUE)
+
+  fake_req <- function() structure(list(tag = "req"), class = "fake_req")
+  fake_resp <- function() structure(list(tag = "resp"), class = "fake_resp")
+
+  testthat::local_mocked_bindings(
+    request = function(base_url) fake_req(),
+    req_url_path_append = function(req, resource) req,
+    req_headers = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, ...) fake_resp(),
+    resp_status = function(resp) env$resp_status,
+    resp_body_string = function(resp) env$body_string,
+    .package = "httr2"
+  )
+
+  expect_error(
+    perform_request(
+      resource = "structure/",
+      base_url = "https://api.imf.org/external/sdmx/3.0/",
+      cache = FALSE
+    ),
+    regexp = "HTTP error.*status=500"
+  )
+})

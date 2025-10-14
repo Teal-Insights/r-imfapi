@@ -114,6 +114,4 @@ perform_request <- function(
     "Unexpected content type ", shQuote(ifelse(is.null(ct), "(none)", ct)),
     ". Expected JSON. Resource=", resource, ". Body preview: ", preview
   ))
-
-  body
 }
