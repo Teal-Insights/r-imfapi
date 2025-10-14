@@ -16,7 +16,8 @@ Imports:
     httr2 (>= 0.6.0)
 Suggests:
     knitr,
-    stringr
+    stringr,
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-imfapi, https://github.com/Teal-Insights/r-imfapi
 BugReports: https://github.com/Teal-Insights/r-imfapi/issues

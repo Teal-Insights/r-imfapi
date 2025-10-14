@@ -48,8 +48,7 @@ perform_request <- function(
     httr2::req_retry(max_tries = max_tries)
 
   if (!is.null(query_params)) {
-    request <- request |>
-      httr2::req_url_query(!!!query_params)
+    request <- do.call(httr2::req_url_query, c(list(request), query_params))
   }
 
   if (isTRUE(cache)) {
