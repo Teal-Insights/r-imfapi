@@ -570,7 +570,7 @@ test_that("imf_get_codelists errors when codelist payload missing or empty", {
 test_that("imf_get_codelists live smoke test (guarded)", {
   skip_on_cran()
   skip_if_offline()
-  skip("Temporarily skipped due to upstream conceptscheme instability; not a unit of this package")
+  skip("Temporarily skipped due to upstream conceptscheme instability")
   # This will hit the actual API; use a small dimension set
   out <- imf_get_codelists(
     c("FREQ"), dataflow_id = "MFS_IR", progress = FALSE,

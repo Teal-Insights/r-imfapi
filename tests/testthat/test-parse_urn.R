@@ -1,5 +1,5 @@
 testthat::test_that("first_scalar handles edge cases and common inputs", {
-  # NULL -> NA_character_
+  # NULL value -> NA_character
   testthat::expect_identical(first_scalar(NULL), NA_character_)
 
   # Empty list -> NA_character_
@@ -22,8 +22,11 @@ testthat::test_that("first_scalar handles edge cases and common inputs", {
   testthat::expect_identical(first_scalar(character(0)), NA_character_)
 })
 
-testthat::test_that("parse_concept_urn parses valid URNs and fails gracefully", {
-  valid <- "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IMF.MCD:CS_MCDREO(7.0.0).COUNTRY"
+testthat::test_that("parse_concept_urn parses valid URNs, fails gracefully", {
+  valid <- paste0(
+    "urn:sdmx:org.sdmx.infomodel.conceptscheme.",
+    "Concept=IMF.MCD:CS_MCDREO(7.0.0).COUNTRY"
+  )
   got <- parse_concept_urn(valid)
   testthat::expect_equal(got$agency, "IMF.MCD")
   testthat::expect_equal(got$scheme, "CS_MCDREO")
@@ -46,32 +49,45 @@ testthat::test_that("parse_concept_urn parses valid URNs and fails gracefully", 
 
 testthat::test_that("parse_codelist_urn handles both Codelist and CodeList", {
   # Real example (Codelist)
-  urn_codelist <- "urn:sdmx:org.sdmx.infomodel.codelist.Codelist=IMF.STA.DS:CL_DQAF_CPI_MONTH(1.0.0)"
+  urn_codelist <- paste0(
+    "urn:sdmx:org.sdmx.infomodel.codelist.",
+    "Codelist=IMF.STA.DS:CL_DQAF_CPI_MONTH(1.0.0)"
+  )
   got1 <- parse_codelist_urn(urn_codelist)
   testthat::expect_equal(got1$agency, "IMF.STA.DS")
   testthat::expect_equal(got1$id, "CL_DQAF_CPI_MONTH")
   testthat::expect_equal(got1$version, "1.0.0")
 
   # Synthetic variant (CodeList)
-  urn_codelist2 <- sub("codelist.Codelist", "codelist.CodeList", urn_codelist, fixed = TRUE)
+  urn_codelist2 <- sub(
+    "codelist.Codelist", "codelist.CodeList", urn_codelist, fixed = TRUE
+  )
   got2 <- parse_codelist_urn(urn_codelist2)
   testthat::expect_equal(got2, got1)
 
   # Failure case -> NA fields
-  fail <- parse_codelist_urn("urn:sdmx:org.sdmx.infomodel.codelist.Code=IMF:FOO(1.0.0).BAR")
+  fail <- parse_codelist_urn(
+    "urn:sdmx:org.sdmx.infomodel.codelist.Code=IMF:FOO(1.0.0).BAR"
+  )
   testthat::expect_true(all(is.na(unlist(fail, use.names = FALSE))))
 })
 
 testthat::test_that("parse_datastructure_urn parses valid DataStructure URN", {
-  urn_dsd <- "urn:sdmx:org.sdmx.infomodel.datastructure.DataStructure=IMF.FAD:DSD_HPD(1.0.0)"
+  urn_dsd <- paste0(
+    "urn:sdmx:org.sdmx.infomodel.datastructure.",
+    "DataStructure=IMF.FAD:DSD_HPD(1.0.0)"
+  )
   got <- parse_datastructure_urn(urn_dsd)
   testthat::expect_equal(got$agency, "IMF.FAD")
   testthat::expect_equal(got$id, "DSD_HPD")
   testthat::expect_equal(got$version, "1.0.0")
 
   # Non-matching -> NA fields
-  bad <- parse_datastructure_urn("urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=IMF.FAD:DSD_HPD(1.0.0).COUNTRY")
+  bad <- parse_datastructure_urn(
+    paste0(
+      "urn:sdmx:org.sdmx.infomodel.datastructure.",
+      "Dimension=IMF.FAD:DSD_HPD(1.0.0).COUNTRY"
+    )
+  )
   testthat::expect_true(all(is.na(unlist(bad, use.names = FALSE))))
 })
-
-

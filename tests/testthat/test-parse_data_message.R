@@ -21,14 +21,18 @@ test_that("returns empty tibble when dataSets/structures missing or empty", {
 test_that("returns empty tibble when series missing or observations empty", {
   # structures minimally present
   st <- list(dimensions = list(series = list(), observation = list()))
-  msg <- list(data = list(dataSets = list(list(series = NULL)), structures = list(st)))
+  msg <- list(
+    data = list(dataSets = list(list(series = NULL)), structures = list(st))
+  )
   expect_identical(nrow(parse_imf_sdmx_json(msg)), 0L)
 
   # series present but no observations -> rows list stays empty
   st <- list(
     dimensions = list(
       series = list(list(id = "D1", values = list(list(id = "X")))),
-      observation = list(list(id = "TIME_PERIOD", values = list(list(value = "T1"))))
+      observation = list(list(
+        id = "TIME_PERIOD", values = list(list(value = "T1"))
+      ))
     )
   )
   ds <- list(series = list(`0` = list(observations = list())))
@@ -102,7 +106,9 @@ test_that("handles out-of-range and non-integer series indices gracefully", {
   st <- list(
     dimensions = list(
       series = list(list(id = "D1", values = list(list(id = "X")))),
-      observation = list(list(id = "TIME_PERIOD", values = list(list(value = "T"))))
+      observation = list(list(
+        id = "TIME_PERIOD", values = list(list(value = "T"))
+      ))
     )
   )
   # key uses non-integer index 'abc' -> NA code
@@ -119,7 +125,12 @@ test_that("handles out-of-range and non-integer series indices gracefully", {
 })
 
 test_that("missing observation dimension yields NA TIME_PERIOD", {
-  st <- list(dimensions = list(series = list(list(id = "D1", values = list(list(id = "X")))), observation = list()))
+  st <- list(
+    dimensions = list(
+      series = list(list(id = "D1", values = list(list(id = "X")))),
+      observation = list()
+    )
+  )
   ds <- list(series = list(`0` = list(observations = list(`0` = list("1.0")))))
   msg <- list(data = list(dataSets = list(ds), structures = list(st)))
   out <- parse_imf_sdmx_json(msg)
@@ -132,10 +143,12 @@ test_that("index_to_code returns NA when dimension values are missing/empty", {
   st <- list(
     dimensions = list(
       series = list(
-        list(id = "D1", values = NULL),                     # triggers length check -> NA
-        list(id = "D2", values = list(list(id = "X")))     # normal mapping
+        list(id = "D1", values = NULL),  # triggers length check -> NA
+        list(id = "D2", values = list(list(id = "X")))  # normal mapping
       ),
-      observation = list(list(id = "TIME_PERIOD", values = list(list(value = "T1"))))
+      observation = list(list(
+        id = "TIME_PERIOD", values = list(list(value = "T1"))
+      ))
     )
   )
   ds <- list(series = list(
@@ -151,8 +164,11 @@ test_that("index_to_code returns NA when dimension values are missing/empty", {
 test_that("parses rows when no series dimensions metadata is present", {
   st <- list(
     dimensions = list(
-      series = list(),                                        # no series dims -> character(0) path
-      observation = list(list(id = "TIME_PERIOD", values = list(list(value = "T1"), list(value = "T2"))))
+      series = list(),  # no series dims -> character(0) path
+      observation = list(list(
+        id = "TIME_PERIOD",
+        values = list(list(value = "T1"), list(value = "T2"))
+      ))
     )
   )
   ds <- list(series = list(
@@ -166,11 +182,13 @@ test_that("parses rows when no series dimensions metadata is present", {
   expect_equal(setdiff(names(out), c("TIME_PERIOD", "OBS_VALUE")), character(0))
 })
 
-test_that("non-integer and out-of-range observation indices yield NA TIME_PERIOD", {
+test_that("non-int and out-of-range observation indices yield NA TIME_PERIOD", {
   st <- list(
     dimensions = list(
       series = list(list(id = "D1", values = list(list(id = "A")))),
-      observation = list(list(id = "TIME_PERIOD", values = list(list(value = "ONLY_ONE"))))
+      observation = list(list(
+        id = "TIME_PERIOD", values = list(list(value = "ONLY_ONE"))
+      ))
     )
   )
   ds <- list(series = list(
@@ -184,5 +202,3 @@ test_that("non-integer and out-of-range observation indices yield NA TIME_PERIOD
   expect_equal(nrow(out), 2L)
   expect_true(all(is.na(out$TIME_PERIOD)))
 })
-
-
