@@ -15,10 +15,6 @@ Imports:
     tibble (>= 3.2.1),
     httr2 (>= 0.6.0)
 Suggests:
-    testthat (>= 3.0.0),
-    devtools (>= 2.4.5),
-    lintr (>= 3.1.2),
-    rmarkdown (>= 2.22),
     knitr,
     stringr
 Config/testthat/edition: 3
