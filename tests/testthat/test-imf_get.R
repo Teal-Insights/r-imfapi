@@ -191,3 +191,59 @@ test_that("imf_get errors when dataflow not found or not unique", {
   )
   expect_error(imf_get("X"), regexp = "Dataflow not found or not unique")
 })
+
+test_that("imf_get treats NULL dimension value as wildcard", {
+  # Mock DSD with three non-time dims in order and TIME_PERIOD as time dim
+  components <- list(
+    dimensionList = list(
+      dimensions = list(
+        list(id = "A", type = "Dimension", position = 1L),
+        list(id = "B", type = "Dimension", position = 2L),
+        list(id = "C", type = "Dimension", position = 3L)
+      ),
+      timeDimensions = list(list(
+        id = "TIME_PERIOD", type = "TimeDimension", position = 4L
+      ))
+    )
+  )
+  flows <- tibble::tibble(
+    id = "DF", agency = "IMF", structure = paste0(
+      "urn:sdmx:org.sdmx.infomodel.datastructure.",
+      "DataStructure=IMF:DSD_DF(1.0.0)"
+    )
+  )
+
+  recorded <- new.env(parent = emptyenv())
+  recorded$resource <- NULL
+
+  testthat::local_mocked_bindings(
+    get_datastructure_components = function(
+      dataflow_id, progress, max_tries, cache
+    ) {
+      components
+    },
+    get_dataflows_components = function(progress, max_tries, cache) {
+      flows
+    },
+    perform_request = function(
+      resource, progress, max_tries, cache, query_params
+    ) {
+      recorded$resource <- resource
+      list(data = list(
+        dataSets = list(list(series = list())), structures = list(list())
+      ))
+    },
+    .package = "imfapi"
+  )
+
+  # A = NULL should be normalized to wildcard "*" in the first segment
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(A = NULL, B = c("b1"))
+  ))
+
+  expect_match(
+    recorded$resource, "^data/dataflow/IMF/DF/\\+/\\*\\.b1\\.\\*$",
+    perl = TRUE
+  )
+})
