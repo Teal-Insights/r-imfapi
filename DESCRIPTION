@@ -10,13 +10,13 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
     cli,
-    curl,
     dplyr (>= 1.1.2),
     purrr (>= 1.0.0),
     tibble (>= 3.2.1),
     httr2 (>= 0.6.0),
     jsonlite (>= 1.8.0) 
 Suggests:
+    curl,
     knitr,
     stringr,
     testthat (>= 3.0.0)
