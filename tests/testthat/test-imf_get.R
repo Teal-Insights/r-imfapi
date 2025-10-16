@@ -28,7 +28,7 @@ test_that("imf_get builds key from DSD positions and applies time filters", {
     )
   )
   flows <- tibble::tibble(
-    id = "DF", agency = "IMF", structure = paste0(
+    id = "DF", agency = "IMF.STA", structure = paste0(
       "urn:sdmx:org.sdmx.infomodel.datastructure.",
       "DataStructure=IMF:DSD_DF(1.0.0)"
     )
@@ -67,7 +67,7 @@ test_that("imf_get builds key from DSD positions and applies time filters", {
   ))
 
   expect_match(
-    recorded$resource, "^data/dataflow/IMF/DF/\\+/a\\.b1\\+b2\\.\\*$",
+    recorded$resource, "^data/dataflow/IMF.STA/DF/\\+/a\\.b1\\+b2\\.\\*$",
     perl = TRUE
   )
   expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2000+le:2002")
@@ -266,4 +266,156 @@ test_that("imf_get returns data within requested time window (live)", {
 
   expect_s3_class(out, "tbl_df")
   expect_true(all(out$TIME_PERIOD == "2019-M01"))
+})
+
+test_that("Agency time filter support is as expected (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+  skip("Test of API behavior to be run rarely, to see if API has changed.")
+
+  # Helper: build key from DSD positions
+  build_key <- function(dfid, dims = list()) {
+    comps <- imfapi:::get_datastructure_components(
+      dataflow_id = dfid, progress = FALSE, max_tries = 3L, cache = TRUE
+    )
+    ds_dims <- comps[["dimensionList"]][["dimensions"]]
+    ids <- vapply(ds_dims, function(x) as.character(x$id), character(1))
+    pos <- vapply(ds_dims, function(x) as.integer(x$position), integer(1))
+    ord <- order(pos)
+    ids <- ids[ord]
+    segments <- vapply(ids, function(id) {
+      v <- dims[[id]]
+      if (is.null(v) || length(v) == 0) {
+        "*"
+      } else {
+        paste(as.character(v), collapse = "+")
+      }
+    }, character(1))
+    paste(segments, collapse = ".")
+  }
+
+  # Helper: fetch provider agency and path
+  build_path <- function(dfid, key) {
+    flows <- imfapi:::get_dataflows_components(
+      progress = FALSE, max_tries = 3L, cache = TRUE
+    )
+    row <- flows[flows$id == dfid, , drop = FALSE]
+    agency <- row$agency[[1]]
+    if (is.null(agency) || !nzchar(agency)) agency <- "all"
+    list(
+      agency = agency,
+      path = sprintf("data/%s/%s/%s/+/%s", "dataflow", agency, dfid, key)
+    )
+  }
+
+  # Helper: run a c[TIME_PERIOD] query and evaluate results
+  run_check <- function(dfid, dims, start_period, end_period) {
+    key <- build_key(dfid, dims)
+    meta <- build_path(dfid, key)
+    query <- list(
+      dimensionAtObservation = "TIME_PERIOD",
+      attributes = "dsd",
+      measures = "all",
+      `c[TIME_PERIOD]` = paste0("ge:", start_period, "+le:", end_period)
+    )
+    message <- tryCatch(
+      imfapi:::perform_request(
+        meta$path,
+        progress = FALSE,
+        max_tries = 3L,
+        cache = TRUE,
+        query_params = query
+      ),
+      error = function(e) NULL
+    )
+    if (is.null(message)) {
+      return(list(agency = meta$agency, got_rows = FALSE, within = FALSE))
+    }
+    df <- imfapi:::parse_imf_sdmx_json(message)
+    got_rows <- nrow(df) > 0
+    # If no rows, or TIME_PERIOD missing, don't attempt to access the column
+    if (!got_rows || !("TIME_PERIOD" %in% names(df))) {
+      return(list(agency = meta$agency, got_rows = got_rows, within = FALSE))
+    }
+    # Determine range check
+    tp <- as.character(df$TIME_PERIOD)
+    if (grepl("-", start_period, fixed = TRUE)) {
+      # Monthly: expect all within the same YYYY- prefix (e.g., 2019-)
+      yy <- substr(start_period, 1L, 4L)
+      within <- all(grepl(paste0("^", yy), tp))
+    } else {
+      # Annual: expect 4-digit years in inclusive range
+      yr <- suppressWarnings(as.integer(substr(tp, 1L, 4L)))
+      within <- all(
+        !is.na(yr),
+        yr >= as.integer(start_period),
+        yr <= as.integer(end_period)
+      )
+    }
+    list(agency = meta$agency, got_rows = got_rows, within = within)
+  }
+
+  # One dataset per agency where possible; dims chosen to return data
+  cases <- list(
+    list(
+      id = "PPI",
+      dims = list(FREQUENCY = "M"),
+      start = "2019-01", end = "2019-01"
+    ), # IMF.STA
+    list(
+      id = "HPD",
+      dims = list(COUNTRY = "AFG"),
+      start = "2015", end = "2020"
+    ),    # IMF.FAD
+    list(
+      id = "FDI",
+      dims = list(COUNTRY = "GX1C_AM"),
+      start = "2015", end = "2020"
+    ),  # IMF.MCM
+    list(
+      id = "AFRREO",
+      dims = list(),
+      tart = "2015", end = "2020"
+    ),    # IMF.AFR
+    list(
+      id = "APDREO",
+      dims = list(COUNTRY = "GX229"),
+      start = "2015",  end = "2020"
+    ),    # IMF.APD
+    list(
+      id = "MCDREO",
+      dims = list(COUNTRY = "GX2014"),
+      start = "2015", end = "2020"
+    ),    # IMF.MCD
+    list(
+      id = "WHDREO",
+      dims = list(),
+      start = "2015", end = "2020"
+    ),    # IMF.WHD
+    list(
+      id = "ISORA_LATEST_DATA_PUB",
+      dims = list(JURISDICTION = "AFG"),
+      start = "2015", end = "2020"
+    ) # ISORA
+  )
+
+  results <- lapply(cases, function(c) run_check(c$id, c$dims, c$start, c$end))
+
+  # Expectation: IMF.STA should return rows within range; others should not
+  for (res in results) {
+    if (identical(res$agency, "IMF.STA")) {
+      expect_true(
+        res$got_rows, info = paste("STA got_rows failed for", res$agency)
+      )
+      expect_true(
+        res$within,  info = paste("STA within-range failed for", res$agency)
+      )
+    } else {
+      expect_false(
+        res$got_rows && res$within,
+        info = paste("Non-STA unexpectedly within-range:", res$agency)
+      )
+    }
+  }
 })

@@ -133,16 +133,12 @@ imf_get <- function(
     attributes = "dsd",
     measures = "all"
   )
-  # Time filter via c[TIME_PERIOD] parameter if provided
   time_filters <- character(0)
   if (!is.null(start_period)) {
     time_filters <- c(time_filters, paste0("ge:", start_period))
   }
   if (!is.null(end_period)) {
     time_filters <- c(time_filters, paste0("le:", end_period))
-  }
-  if (length(time_filters) > 0) {
-    query[["c[TIME_PERIOD]"]] <- paste(time_filters, collapse = "+")
   }
 
   # Determine dataflow agency (owner) using dataflows helper
@@ -156,6 +152,19 @@ imf_get <- function(
   provider_agency <- flow_row$agency[[1]]
   if (is.null(provider_agency) || !nzchar(provider_agency)) {
     provider_agency <- "all"
+  }
+
+  # Apply time filter only for IMF.STA via c[TIME_PERIOD]; other agencies
+  # typically ignore time filters server-side. Warn users in those cases.
+  if (length(time_filters) > 0) {
+    if (identical(provider_agency, "IMF.STA")) {
+      query[["c[TIME_PERIOD]"]] <- paste(time_filters, collapse = "+")
+    } else {
+      cli::cli_warn(
+        "Agency {.val {provider_agency}} does not support time filters; ",
+        "time window will be ignored."
+      )
+    }
   }
 
   # Build path and perform request
@@ -172,28 +181,6 @@ imf_get <- function(
   )
   # Parse SDMX JSON message into a tidy tibble
   out <- parse_imf_sdmx_json(message)
-
-  # Fallback: Some datasets (e.g., FM annual) ignore c[TIME_PERIOD] but honor
-  # startPeriod/endPeriod. If a time window was requested and the result is
-  # empty, retry using startPeriod/endPeriod ONLY (no c[TIME_PERIOD]).
-  if (length(time_filters) > 0 && nrow(out) == 0) {
-    alt_query <- list(
-      dimensionAtObservation = "TIME_PERIOD",
-      attributes = "dsd",
-      measures = "all"
-    )
-    if (!is.null(start_period)) alt_query[["startPeriod"]] <- start_period
-    if (!is.null(end_period)) alt_query[["endPeriod"]] <- end_period
-
-    message2 <- perform_request(
-      data_path,
-      progress = progress,
-      max_tries = max_tries,
-      cache = cache,
-      query_params = alt_query
-    )
-    out <- parse_imf_sdmx_json(message2)
-  }
 
   out
 }
