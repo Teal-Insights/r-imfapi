@@ -22,8 +22,8 @@
 #' )
 #'
 #' @examples
-#' \dontrun{
-#' imf_get_codelists(c("FREQUENCY", "TIME_PERIOD"))
+#' if (curl::has_internet()) {
+#'   imf_get_codelists(c("FREQUENCY", "TIME_PERIOD"))
 #' }
 #' @export
 imf_get_codelists <- function(

@@ -36,21 +36,11 @@
 #' `end_period` query parameters rather than encoding time into the key.
 #'
 #' @examples
-#' \dontrun{
-#' # Minimal time-series retrieval with COUNTRY filtered
-#' imf_get(
-#'   dataflow_id = "GFS",
-#'   dimensions = list(COUNTRY = c("USA", "CAN")),
-#'   start_period = "2015",
-#'   end_period = "2020"
-#' )
-#'
-#' # Cross-sectional or flat contexts can be explored if needed
-#' imf_get(
-#'   dataflow_id = "GFS",
-#'   context = "CROSS_SECTIONAL",
-#'   attributes = "Series"
-#' )
+#' if (curl::has_internet()) {
+#'   imf_get(
+#'     dataflow_id = "FM",  # Fiscal Monitor
+#'     dimensions = list(COUNTRY = c("USA", "CAN"))
+#'   )
 #' }
 #' @export
 imf_get <- function(

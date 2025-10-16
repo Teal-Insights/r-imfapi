@@ -28,7 +28,7 @@ Retrieves and returns all available dataflow definitions from the SDMX
 dataflow endpoint.
 }
 \examples{
-\dontrun{
-imf_get_dataflows()
+if (curl::has_internet()) {
+  imf_get_dataflows()
 }
 }
