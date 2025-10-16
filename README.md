@@ -20,7 +20,13 @@ install.packages("imfapi")
 library(imfapi)
 ```
 
-### Get datasets
+The `imfapi` package provides a four-step workflow for retrieving data
+from the IMF’s SDMX API:
+
+### Step 1: List available dataflows and select one
+
+Start by listing all available IMF datasets (dataflows) to find the one
+you need:
 
 ``` r
 imf_get_dataflows() |>
@@ -39,7 +45,14 @@ imf_get_dataflows() |>
 | IIPCC   | Currency C… | The Curren… | 13.0.0  | IMF.STA | 2025-06-03…  |
 | PSBS    | Public Sec… | The Public… | 2.0.0   | IMF.FAD | 2025-04-23…  |
 
-### Get datastructure dimensions
+Choose a dataflow based on its `id`, `name`, and `description`. In this
+example, we’ll use the “PPI” (Producer Price Index) dataflow.
+
+### Step 2: Get the dimensions for filtering
+
+Each dataflow has a datastructure that defines which dimensions you can
+filter on. Use `imf_get_datastructure()` to see what dimensions are
+available:
 
 ``` r
 imf_get_datastructure(
@@ -57,7 +70,14 @@ imf_get_datastructure(
 | TIME_PERIOD            | TimeDimension |        4 |
 | OBS_VALUE              | Measure       |       NA |
 
-### Get codelists for dimensions we want to filter on
+The `dimension_id` column shows the filter dimensions you can use (e.g.,
+`COUNTRY`, `FREQUENCY`). Set `include_time = TRUE` to see time
+dimensions and `include_measures = TRUE` to see measure dimensions.
+
+### Step 3: Fetch codelists for dimensions you want to filter on
+
+For any dimension you want to filter, retrieve its codelist to see the
+valid codes you can use:
 
 ``` r
 imf_get_codelists(dimension_ids = c("COUNTRY"), dataflow_id = "PPI") |>
@@ -75,7 +95,16 @@ imf_get_codelists(dimension_ids = c("COUNTRY"), dataflow_id = "PPI") |>
 | COUNTRY      | AND  | Andorra, P… | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
 | COUNTRY      | AGO  | Angola      | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
 
-### Get data
+The `code` column shows the values you’ll use in your filters (e.g.,
+“USA”, “CAN”). The `name` column provides human-readable labels. You can
+request codelists for multiple dimensions at once by passing a vector of
+dimension IDs.
+
+### Step 4: Request data with your filters
+
+Finally, use `imf_get()` to fetch the actual data. Pass a named list of
+dimension filters where each name is a `dimension_id` and each value is
+a character vector of codes:
 
 ``` r
 imf_get(
@@ -94,3 +123,8 @@ imf_get(
     ## 4 CAN     PPI       IX                     A         1959             16.4
     ## 5 CAN     PPI       IX                     A         1960             16.4
     ## 6 CAN     PPI       IX                     A         1961             16.4
+
+You can also use `start_period` and `end_period` arguments to filter by
+time (e.g., `start_period = "2015"`, `end_period = "2020"`). If you omit
+a dimension from the `dimensions` list, all values for that dimension
+will be included.
