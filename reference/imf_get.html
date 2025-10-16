@@ -22,6 +22,7 @@ is applied via query parameters."><meta property="og:image" content="https://tea
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/Teal-Insights/r-imfapi/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -116,22 +117,26 @@ blank for wildcard. Time filtering is applied via <code>start_period</code> and
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Minimal time-series retrieval with COUNTRY filtered</span></span></span>
-<span class="r-in"><span><span class="fu">imf_get</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  dataflow_id <span class="op">=</span> <span class="st">"GFS"</span>,</span></span>
-<span class="r-in"><span>  dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>COUNTRY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"USA"</span>, <span class="st">"CAN"</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  start_period <span class="op">=</span> <span class="st">"2015"</span>,</span></span>
-<span class="r-in"><span>  end_period <span class="op">=</span> <span class="st">"2020"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Cross-sectional or flat contexts can be explored if needed</span></span></span>
-<span class="r-in"><span><span class="fu">imf_get</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  dataflow_id <span class="op">=</span> <span class="st">"GFS"</span>,</span></span>
-<span class="r-in"><span>  context <span class="op">=</span> <span class="st">"CROSS_SECTIONAL"</span>,</span></span>
-<span class="r-in"><span>  attributes <span class="op">=</span> <span class="st">"Series"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/curl/reference/nslookup.html" class="external-link">has_internet</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu">imf_get</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    dataflow_id <span class="op">=</span> <span class="st">"FM"</span>,  <span class="co"># Fiscal Monitor</span></span></span>
+<span class="r-in"><span>    dimensions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>COUNTRY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"USA"</span>, <span class="st">"CAN"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 552 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    COUNTRY INDICATOR         FREQUENCY TIME_PERIOD OBS_VALUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> CAN     CAB_S13_POPGDP_PT A         1991           -<span style="color: #BB0000;">7.61</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> CAN     CAB_S13_POPGDP_PT A         1992           -<span style="color: #BB0000;">8.07</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> CAN     CAB_S13_POPGDP_PT A         1993           -<span style="color: #BB0000;">8.05</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> CAN     CAB_S13_POPGDP_PT A         1994           -<span style="color: #BB0000;">7.08</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> CAN     CAB_S13_POPGDP_PT A         1995           -<span style="color: #BB0000;">5.58</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> CAN     CAB_S13_POPGDP_PT A         1996           -<span style="color: #BB0000;">2.44</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> CAN     CAB_S13_POPGDP_PT A         1997            0.315</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> CAN     CAB_S13_POPGDP_PT A         1998            0.346</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> CAN     CAB_S13_POPGDP_PT A         1999            1.29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> CAN     CAB_S13_POPGDP_PT A         2000            1.70 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 542 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
