@@ -13,3 +13,4 @@
 ^\.cursor$
 ^\.vscode$
 ^artifacts$
+^cran-comments\.md$
