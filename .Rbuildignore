@@ -12,5 +12,6 @@
 ^codecov\.yml$
 ^\.cursor$
 ^\.vscode$
+^\.claude$
 ^artifacts$
 ^cran-comments\.md$
