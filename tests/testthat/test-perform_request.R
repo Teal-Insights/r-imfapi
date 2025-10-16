@@ -118,6 +118,96 @@ test_that("max_tries must be a positive whole number", {
   )
 })
 
+test_that("timeout_seconds must be a positive whole number", {
+  expect_error(
+    perform_request(
+      "structure", timeout_seconds = NA,
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", timeout_seconds = Inf,
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", timeout_seconds = 0,
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", timeout_seconds = -1,
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", timeout_seconds = c(1, 2),
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", timeout_seconds = "3",
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+})
+
+test_that("low_speed_seconds must be a positive whole number", {
+  expect_error(
+    perform_request(
+      "structure", low_speed_seconds = NA,
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", low_speed_seconds = Inf,
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", low_speed_seconds = 0,
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", low_speed_seconds = -1,
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", low_speed_seconds = c(1, 2),
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+  expect_error(
+    perform_request(
+      "structure", low_speed_seconds = "3",
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "positive whole number"
+  )
+})
+
 test_that("build pipeline calls expected httr2 functions", {
   calls <- character()
   env <- new.env(parent = emptyenv())

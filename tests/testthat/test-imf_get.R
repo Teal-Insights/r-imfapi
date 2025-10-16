@@ -74,6 +74,64 @@ test_that("imf_get builds key from DSD positions and applies time filters", {
   expect_identical(recorded$query$dimensionAtObservation, "TIME_PERIOD")
 })
 
+test_that("imf_get warns when provider does not support time filters", {
+  # DSD: one non-time dim and TIME_PERIOD present
+  components <- list(
+    dimensionList = list(
+      dimensions = list(list(id = "A", type = "Dimension", position = 1L)),
+      timeDimensions = list(list(
+        id = "TIME_PERIOD", type = "TimeDimension", position = 2L
+      ))
+    )
+  )
+  # Non-STA provider to trigger warning path
+  flows <- tibble::tibble(
+    id = "DF", agency = "IMF.FAD", structure = paste0(
+      "urn:sdmx:org.sdmx.infomodel.datastructure.",
+      "DataStructure=IMF:DSD_DF(1.0.0)"
+    )
+  )
+
+  recorded <- new.env(parent = emptyenv())
+  recorded$query <- NULL
+
+  testthat::local_mocked_bindings(
+    get_datastructure_components = function(
+      dataflow_id, progress, max_tries, cache
+    ) {
+      components
+    },
+    get_dataflows_components = function(progress, max_tries, cache) {
+      flows
+    },
+    perform_request = function(
+      resource, progress, max_tries, cache, query_params
+    ) {
+      recorded$query <- query_params
+      list(data = list(
+        dataSets = list(list(series = list())), structures = list(list())
+      ))
+    },
+    .package = "imfapi"
+  )
+
+  # Expect a warning about ignoring time filters for non-IMF.STA agencies
+  expect_warning(
+    invisible(imf_get(
+      dataflow_id = "DF",
+      dimensions = list(A = "x"),
+      start_period = "2000",
+      end_period = "2001"
+    )),
+    regexp = "does not support time filters",
+    fixed = FALSE
+  )
+
+  # Ensure c[TIME_PERIOD] was not included in the query
+  expect_false("c[TIME_PERIOD]" %in% names(recorded$query))
+  expect_identical(recorded$query$dimensionAtObservation, "TIME_PERIOD")
+})
+
 test_that("imf_get resolves provider and falls back to 'all'", {
   components <- list(
     dimensionList = list(
