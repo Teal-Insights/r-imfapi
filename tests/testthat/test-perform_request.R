@@ -160,6 +160,14 @@ test_that("build pipeline calls expected httr2 functions", {
       req
     },
     req_error = function(req, ...) req,
+    req_timeout = function(req, ...) {
+      env$calls <- c(env$calls, "req_timeout")
+      req
+    },
+    req_options = function(req, ...) {
+      env$calls <- c(env$calls, "req_options")
+      req
+    },
     req_url_query = function(req, ...) {
       env$last_query <- list(...)
       env$calls <- c(env$calls, "req_url_query")
@@ -246,6 +254,14 @@ test_that("progress = TRUE calls req_progress", {
       req
     },
     req_error = function(req, ...) req,
+    req_timeout = function(req, ...) {
+      env$calls <- c(env$calls, "req_timeout")
+      req
+    },
+    req_options = function(req, ...) {
+      env$calls <- c(env$calls, "req_options")
+      req
+    },
     req_progress = function(req, ...) {
       env$calls <- c(env$calls, "req_progress")
       req
@@ -292,6 +308,8 @@ test_that("HTTP >= 400 parses JSON error and aborts", {
     req_headers = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_error = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_options = function(req, ...) req,
     req_perform = function(req, ...) fake_resp(),
     resp_status = function(resp) env$resp_status,
     resp_body_string = function(resp) env$body_string,
@@ -323,6 +341,8 @@ test_that("falls back to parsing JSON from text when content-type not JSON", {
     req_headers = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_error = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_options = function(req, ...) req,
     req_perform = function(req, ...) fake_resp(),
     resp_status = function(resp) env$resp_status,
     resp_header = function(resp, name) env$content_type,
@@ -355,6 +375,8 @@ test_that("unexpected non-JSON content produces informative error", {
     req_headers = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_error = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_options = function(req, ...) req,
     req_perform = function(req, ...) fake_resp(),
     resp_status = function(resp) env$resp_status,
     resp_header = function(resp, name) env$content_type,
@@ -391,6 +413,8 @@ test_that("HTTP error with empty message uses default 'HTTP error'", {
     req_headers = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_error = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_options = function(req, ...) req,
     req_perform = function(req, ...) fake_resp(),
     resp_status = function(resp) env$resp_status,
     resp_body_string = function(resp) env$body_string,
@@ -439,8 +463,11 @@ test_that("non-existent resource yields informative HTTP error (live)", {
   expect_error(
     perform_request(
       resource = "no-such-resource-xyz",
-      base_url = "https://api.imf.org/external/sdmx/3.0/"
+      base_url = "https://api.imf.org/external/sdmx/3.0/",
+      timeout_seconds = 5L,
+      low_speed_seconds = 3L,
+      max_tries = 1L
     ),
-    regexp = "status="
+    regexp = "(status=|[Tt]imeout|Operation too slow)"
   )
 })

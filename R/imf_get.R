@@ -171,5 +171,29 @@ imf_get <- function(
     query_params = query
   )
   # Parse SDMX JSON message into a tidy tibble
-  parse_imf_sdmx_json(message)
+  out <- parse_imf_sdmx_json(message)
+
+  # Fallback: Some datasets (e.g., FM annual) ignore c[TIME_PERIOD] but honor
+  # startPeriod/endPeriod. If a time window was requested and the result is
+  # empty, retry using startPeriod/endPeriod ONLY (no c[TIME_PERIOD]).
+  if (length(time_filters) > 0 && nrow(out) == 0) {
+    alt_query <- list(
+      dimensionAtObservation = "TIME_PERIOD",
+      attributes = "dsd",
+      measures = "all"
+    )
+    if (!is.null(start_period)) alt_query[["startPeriod"]] <- start_period
+    if (!is.null(end_period)) alt_query[["endPeriod"]] <- end_period
+
+    message2 <- perform_request(
+      data_path,
+      progress = progress,
+      max_tries = max_tries,
+      cache = cache,
+      query_params = alt_query
+    )
+    out <- parse_imf_sdmx_json(message2)
+  }
+
+  out
 }

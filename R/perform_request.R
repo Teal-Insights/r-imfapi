@@ -7,7 +7,9 @@ perform_request <- function(
   base_url = "https://api.imf.org/external/sdmx/3.0/",
   query_params = NULL,
   max_tries = 10L,
-  cache = TRUE
+  cache = TRUE,
+  timeout_seconds = 30L,
+  low_speed_seconds = 15L
 ) {
   # Argument validation
   if (
@@ -34,6 +36,20 @@ perform_request <- function(
   ) {
     cli::cli_abort("{.arg max_tries} must be a positive whole number.")
   }
+  if (
+    !is.numeric(timeout_seconds) || length(timeout_seconds) != 1L ||
+      is.na(timeout_seconds) || !is.finite(timeout_seconds) ||
+      timeout_seconds <= 0
+  ) {
+    cli::cli_abort("{.arg timeout_seconds} must be a positive whole number.")
+  }
+  if (
+    !is.numeric(low_speed_seconds) || length(low_speed_seconds) != 1L ||
+      is.na(low_speed_seconds) || !is.finite(low_speed_seconds) ||
+      low_speed_seconds <= 0
+  ) {
+    cli::cli_abort("{.arg low_speed_seconds} must be a positive whole number.")
+  }
   max_tries <- as.integer(max_tries)
 
   # Create the request
@@ -46,7 +62,9 @@ perform_request <- function(
       )
     ) |>
     httr2::req_retry(max_tries = max_tries) |>
-    httr2::req_error(is_error = function(resp) FALSE)
+    httr2::req_error(is_error = function(resp) FALSE) |>
+    httr2::req_timeout(seconds = timeout_seconds) |>
+    httr2::req_options(low_speed_time = low_speed_seconds, low_speed_limit = 1)
 
   if (!is.null(query_params)) {
     request <- do.call(httr2::req_url_query, c(list(request), query_params))
