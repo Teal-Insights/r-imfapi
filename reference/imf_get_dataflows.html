@@ -9,7 +9,7 @@ dataflow endpoint."><meta property="og:image" content="https://teal-insights.git
 
     <a class="navbar-brand me-2" href="../index.html">imfapi</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,18 +78,18 @@ last_updated = character() # from annotations
 <span class="r-in"><span>  <span class="fu">imf_get_dataflows</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 71 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    id                    name            description version agency last_updated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ED                    Export Diversi… <span style="color: #949494;">"</span>Covers 20… 1.0.0   IMF.R… 2025-03-29T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> IL                    International … <span style="color: #949494;">"</span>Internati… 13.0.1  IMF.S… 2025-08-29T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> IMTS                  International … <span style="color: #949494;">"</span>The Inter… 1.0.0   IMF.S… 2025-03-28T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ISORA_LATEST_DATA_PUB ISORA Latest D… <span style="color: #949494;">"</span>ISORA dat… 4.0.0   ISORA  2025-07-04T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> PI_WCA                Production Ind… <span style="color: #949494;">"</span>The Produ… 1.0.0   IMF.S… 2025-04-10T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> SDG                   IMF Reported S… <span style="color: #949494;">"</span>This data… 2.0.1   IMF.S… 2025-08-28T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ER                    Exchange Rates… <span style="color: #949494;">"</span>This data… 4.0.1   IMF.S… 2025-03-27T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> MFS_FMP               Monetary and F… <span style="color: #949494;">"</span>The Monet… 2.0.3   IMF.S… 2025-08-12T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ITS                   International … <span style="color: #949494;">"</span>Using the… 3.0.1   IMF.R… 2025-07-03T…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> PCPS                  Primary Commod… <span style="color: #949494;">"</span>Indices o… 9.0.0   IMF.R… 2025-06-16T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    id      name                          description version agency last_updated</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> FSIBSIS Financial Soundness Indicato… <span style="color: #949494;">"</span>The Finan… 18.0.0  IMF.S… 2025-07-01T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> FM      Fiscal Monitor (FM)           <span style="color: #949494;">"</span>The Fisca… 5.0.0   IMF.F… 2025-03-28T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> EER     Effective Exchange Rate (EER) <span style="color: #949494;">"</span>The Effec… 6.0.0   IMF.S… 2025-03-28T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ITG     International Trade in Goods… <span style="color: #949494;">"</span>Trade in … 4.0.0   IMF.S… 2025-03-28T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> IIPCC   Currency Composition of the … <span style="color: #949494;">"</span>The Curre… 13.0.0  IMF.S… 2025-06-03T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> PSBS    Public Sector Balance Sheet … <span style="color: #949494;">"</span>The Publi… 2.0.0   IMF.F… 2025-04-23T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ITG_WCA International Trade in Goods… <span style="color: #949494;">"</span>The datas… 2.0.4   IMF.S… 2025-04-15T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ICSD    Investment and Capital Stock… <span style="color: #949494;">"</span>This data… 1.0.0   IMF.F… 2025-04-21T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> SRD     Structural Reform Database (… <span style="color: #949494;">"</span>The SRD c… 1.0.0   IMF.R… 2025-04-30T…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> PPI     Producer Price Index (PPI)    <span style="color: #949494;">"</span>Producer … 3.0.0   IMF.S… 2025-03-28T…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 61 more rows</span></span>
 </code></pre></div>
     </div>
