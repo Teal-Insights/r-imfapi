@@ -42,6 +42,9 @@ corresponding codelists. By convention, codelist IDs are assumed to be
 }
 \examples{
 if (curl::has_internet()) {
-  imf_get_codelists(c("FREQUENCY", "TIME_PERIOD"))
+  imf_get_codelists(
+    c("FREQUENCY", "TIME_PERIOD"),
+    dataflow_id = "FM"  # Fiscal Monitor
+  )
 }
 }
