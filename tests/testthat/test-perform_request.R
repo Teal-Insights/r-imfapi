@@ -1,4 +1,4 @@
-test_that("resource must be a non-empty character scalar (no network)", {
+test_that("resource must be a non-empty character scalar", {
   expect_error(
     perform_request(
       resource = 1,
@@ -39,7 +39,7 @@ test_that("resource must be a path (not a full URL)", {
   )
 })
 
-test_that("progress must be a single non-missing logical (no network)", {
+test_that("progress must be a single non-missing logical", {
   expect_error(
     perform_request(
       "structure", progress = c(TRUE, FALSE),
@@ -56,7 +56,7 @@ test_that("progress must be a single non-missing logical (no network)", {
   )
 })
 
-test_that("cache must be a single non-missing logical (no network)", {
+test_that("cache must be a single non-missing logical", {
   expect_error(
     perform_request(
       "structure", cache = c(TRUE, FALSE),
@@ -73,7 +73,7 @@ test_that("cache must be a single non-missing logical (no network)", {
   )
 })
 
-test_that("max_tries must be a positive whole number (no network)", {
+test_that("max_tries must be a positive whole number", {
   expect_error(
     perform_request(
       "structure", max_tries = NA,
@@ -118,54 +118,7 @@ test_that("max_tries must be a positive whole number (no network)", {
   )
 })
 
-test_that("structure endpoint returns JSON (live)", {
-  skip_on_cran()
-  skip_if_offline()
-  skip("Temporarily skipped: IMF structure root intermittently 404s")
-  res <- perform_request(
-    resource = "structure/",
-    base_url = "https://api.imf.org/external/sdmx/3.0/"
-  )
-  expect_true(is.list(res))
-  expect_gt(length(res), 0)
-})
-
-test_that("query params are accepted and request succeeds (live)", {
-  skip_on_cran()
-  skip_if_offline()
-  res <- perform_request(
-    resource = "structure/dataflow",
-    base_url = "https://api.imf.org/external/sdmx/3.0/",
-    query_params = list(references = "none", offset = "0", limit = "5")
-  )
-  expect_true(is.list(res))
-})
-
-test_that("progress path executes (live)", {
-  skip_on_cran()
-  skip_if_offline()
-  res <- perform_request(
-    resource = "structure/codelist",
-    base_url = "https://api.imf.org/external/sdmx/3.0/",
-    progress = TRUE,
-    query_params = list(limit = "1")
-  )
-  expect_true(is.list(res))
-})
-
-test_that("non-existent resource yields informative HTTP error (live)", {
-  skip_on_cran()
-  skip_if_offline()
-  expect_error(
-    perform_request(
-      resource = "no-such-resource-xyz",
-      base_url = "https://api.imf.org/external/sdmx/3.0/"
-    ),
-    regexp = "status="
-  )
-})
-
-test_that("build pipeline calls expected httr2 functions (no network)", {
+test_that("build pipeline calls expected httr2 functions", {
   calls <- character()
   env <- new.env(parent = emptyenv())
   env$calls <- character()
@@ -265,7 +218,7 @@ test_that("build pipeline calls expected httr2 functions (no network)", {
   expect_setequal(intersect(env$calls, subset), subset)
 })
 
-test_that("progress = TRUE calls req_progress (no network)", {
+test_that("progress = TRUE calls req_progress", {
   env <- new.env(parent = emptyenv())
   env$calls <- character()
   env$resp_status <- 200L
@@ -318,7 +271,7 @@ test_that("progress = TRUE calls req_progress (no network)", {
   expect_true("req_progress" %in% env$calls)
 })
 
-test_that("HTTP >= 400 parses JSON error and aborts (no network)", {
+test_that("HTTP >= 400 parses JSON error and aborts", {
   env <- new.env(parent = emptyenv())
   env$calls <- character()
   env$resp_status <- 404L
@@ -451,5 +404,43 @@ test_that("HTTP error with empty message uses default 'HTTP error'", {
       cache = FALSE
     ),
     regexp = "HTTP error.*status=500"
+  )
+})
+
+test_that("query params are accepted and request succeeds (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+  res <- perform_request(
+    resource = "structure/dataflow",
+    base_url = "https://api.imf.org/external/sdmx/3.0/",
+    query_params = list(references = "none", offset = "0", limit = "5")
+  )
+  expect_true(is.list(res))
+})
+
+test_that("progress path executes (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+  res <- perform_request(
+    resource = "structure/codelist",
+    base_url = "https://api.imf.org/external/sdmx/3.0/",
+    progress = TRUE,
+    query_params = list(limit = "1")
+  )
+  expect_true(is.list(res))
+})
+
+test_that("non-existent resource yields informative HTTP error (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+  expect_error(
+    perform_request(
+      resource = "no-such-resource-xyz",
+      base_url = "https://api.imf.org/external/sdmx/3.0/"
+    ),
+    regexp = "status="
   )
 })

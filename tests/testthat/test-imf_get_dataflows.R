@@ -1,4 +1,4 @@
-test_that("imf_get_dataflows maps fields and hides structure (mocked)", {
+test_that("imf_get_dataflows maps fields and hides structure", {
   env <- new.env(parent = emptyenv())
   env$calls <- list()
 
@@ -116,7 +116,7 @@ test_that("imf_get_dataflows propagates progress/max_tries/cache", {
   expect_identical(env$last$cache, FALSE)
 })
 
-test_that("imf_get_dataflows errors when no dataflows present (mocked)", {
+test_that("imf_get_dataflows errors when no dataflows present", {
   testthat::local_mocked_bindings(
     perform_request = function(resource, progress, max_tries, cache, ...) {
       list(data = list(dataflows = NULL))
@@ -132,6 +132,7 @@ test_that("imf_get_dataflows errors when no dataflows present (mocked)", {
 
 test_that("imf_get_dataflows returns tibble with expected columns (live)", {
   skip_on_cran()
+  skip_on_ci()
   skip_if_offline()
   out <- imf_get_dataflows(progress = FALSE, max_tries = 3L, cache = TRUE)
   expect_s3_class(out, "tbl_df")

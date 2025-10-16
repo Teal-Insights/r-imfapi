@@ -247,3 +247,23 @@ test_that("imf_get treats NULL dimension value as wildcard", {
     perl = TRUE
   )
 })
+
+test_that("imf_get returns data within requested time window (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+
+  # Request a very narrow monthly slice to keep payload small
+  out <- imf_get(
+    dataflow_id = "MFS_IR",
+    dimensions = list(FREQUENCY = "M"),
+    start_period = "2019-01",
+    end_period = "2019-01",
+    progress = FALSE,
+    max_tries = 3L,
+    cache = TRUE
+  )
+
+  expect_s3_class(out, "tbl_df")
+  expect_true(all(out$TIME_PERIOD == "2019-M01"))
+})

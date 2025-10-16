@@ -9,7 +9,7 @@ test_that("imf_get_codelists maps codes across dimensions", {
     dimensionList = list(
       dimensions = list(
         list(
-          id = "FREQ",
+          id = "FREQUENCY",
           type = "Dimension",
           position = 1L,
           conceptIdentity = list(
@@ -55,7 +55,7 @@ test_that("imf_get_codelists maps codes across dimensions", {
       conceptSchemes = list(
         list(
           concepts = list(
-            list(id = list("FREQ"), coreRepresentation = list(
+            list(id = list("FREQUENCY"), coreRepresentation = list(
               enumeration = list(
                 paste0(
                   "urn:sdmx:org.sdmx.infomodel.codelist",
@@ -145,7 +145,7 @@ test_that("imf_get_codelists maps codes across dimensions", {
   )
 
   out <- imf_get_codelists(
-    c("FREQ", "COUNTRY"), dataflow_id = "MFS_IR", progress = TRUE,
+    c("FREQUENCY", "COUNTRY"), dataflow_id = "MFS_IR", progress = TRUE,
     max_tries = 5L, cache = FALSE
   )
 
@@ -156,10 +156,10 @@ test_that("imf_get_codelists maps codes across dimensions", {
       "codelist_agency", "codelist_version"
     ) %in% names(out)
   ))
-  expect_true(all(out$dimension_id %in% c("FREQ", "COUNTRY")))
+  expect_true(all(out$dimension_id %in% c("FREQUENCY", "COUNTRY")))
 
   # Check a couple of concrete values
-  freq_rows <- out[out$dimension_id == "FREQ", ]
+  freq_rows <- out[out$dimension_id == "FREQUENCY", ]
   expect_true(any(freq_rows$code == "A" & grepl("Annual", freq_rows$name)))
   expect_true(any(freq_rows$code == "Q"))
 
@@ -175,7 +175,7 @@ test_that("unknown requested dimension is skipped (entry == NULL)", {
   ds_components <- list(
     dimensionList = list(
       dimensions = list(list(
-        id = "FREQ",
+        id = "FREQUENCY",
         conceptIdentity = list(
           paste0(
             "urn:sdmx:org.sdmx.infomodel.conceptscheme",
@@ -203,7 +203,7 @@ test_that("unknown requested dimension is skipped (entry == NULL)", {
     perform_request = function(resource, progress, max_tries, cache, ...) {
       if (grepl("^structure/conceptscheme/", resource)) {
         return(list(data = list(conceptSchemes = list(list(concepts = list(
-          list(id = list("FREQ"), coreRepresentation = list(
+          list(id = list("FREQUENCY"), coreRepresentation = list(
             enumeration = list(
               paste0(
                 "urn:sdmx:org.sdmx.infomodel.codelist",
@@ -223,16 +223,16 @@ test_that("unknown requested dimension is skipped (entry == NULL)", {
     .package = "imfapi"
   )
 
-  out <- imf_get_codelists(c("FREQ", "UNKNOWN"), dataflow_id = "X")
+  out <- imf_get_codelists(c("FREQUENCY", "UNKNOWN"), dataflow_id = "X")
   expect_s3_class(out, "tbl_df")
-  expect_true(all(out$dimension_id == "FREQ"))
+  expect_true(all(out$dimension_id == "FREQUENCY"))
 })
 
 test_that("null concepts in conceptscheme are skipped (cands is NULL)", {
   ds_components <- list(
     dimensionList = list(
       dimensions = list(list(
-        id = "FREQ",
+        id = "FREQUENCY",
         conceptIdentity = list(
           paste0(
             "urn:sdmx:org.sdmx.infomodel.conceptscheme",
@@ -271,7 +271,7 @@ test_that("null concepts in conceptscheme are skipped (cands is NULL)", {
     .package = "imfapi"
   )
 
-  out <- imf_get_codelists("FREQ", dataflow_id = "X")
+  out <- imf_get_codelists("FREQUENCY", dataflow_id = "X")
   expect_s3_class(out, "tbl_df")
   expect_true(nrow(out) == 1)
 })
@@ -280,7 +280,7 @@ test_that("empty enumeration short-circuits (enum_urn empty -> return NULL)", {
   ds_components <- list(
     dimensionList = list(
       dimensions = list(list(
-        id = "FREQ",
+        id = "FREQUENCY",
         conceptIdentity = list(
           paste0(
             "urn:sdmx:org.sdmx.infomodel.conceptscheme",
@@ -303,7 +303,7 @@ test_that("empty enumeration short-circuits (enum_urn empty -> return NULL)", {
     perform_request = function(resource, progress, max_tries, cache, ...) {
       if (grepl("^structure/conceptscheme/", resource)) {
         return(list(data = list(conceptSchemes = list(list(concepts = list(
-          list(id = list("FREQ"), coreRepresentation = list())
+          list(id = list("FREQUENCY"), coreRepresentation = list())
         ))))))
       }
       stop("unexpected resource: ", resource)
@@ -311,7 +311,7 @@ test_that("empty enumeration short-circuits (enum_urn empty -> return NULL)", {
     .package = "imfapi"
   )
 
-  out <- imf_get_codelists("FREQ", dataflow_id = "X")
+  out <- imf_get_codelists("FREQUENCY", dataflow_id = "X")
   # No rows should be returned since enumeration is empty and dimension skipped
   expect_s3_class(out, "tbl_df")
   expect_true(nrow(out) == 0)
@@ -321,7 +321,7 @@ test_that("codelist-not-found error is thrown when both paths fail", {
   ds_components <- list(
     dimensionList = list(
       dimensions = list(list(
-        id = "FREQ",
+        id = "FREQUENCY",
         conceptIdentity = list(
           paste0(
             "urn:sdmx:org.sdmx.infomodel.conceptscheme",
@@ -349,7 +349,7 @@ test_that("codelist-not-found error is thrown when both paths fail", {
     perform_request = function(resource, progress, max_tries, cache, ...) {
       if (grepl("^structure/conceptscheme/", resource)) {
         return(list(data = list(conceptSchemes = list(list(concepts = list(
-          list(id = list("FREQ"), coreRepresentation = list(
+          list(id = list("FREQUENCY"), coreRepresentation = list(
             enumeration = list(
               paste0(
                 "urn:sdmx:org.sdmx.infomodel.codelist",
@@ -371,7 +371,7 @@ test_that("codelist-not-found error is thrown when both paths fail", {
   )
 
   expect_error(
-    imf_get_codelists("FREQ", dataflow_id = "X"),
+    imf_get_codelists("FREQUENCY", dataflow_id = "X"),
     regexp = "Codelist CL_FREQ not found"
   )
 })
@@ -383,7 +383,7 @@ test_that("imf_get_codelists propagates args for conceptscheme and codelist", {
     dimensionList = list(
       dimensions = list(
         list(
-          id = "FREQ",
+          id = "FREQUENCY",
           conceptIdentity = list(
             paste0(
               "urn:sdmx:org.sdmx.infomodel.conceptscheme",
@@ -425,7 +425,7 @@ test_that("imf_get_codelists propagates args for conceptscheme and codelist", {
           data = list(
             conceptSchemes = list(list(
               concepts = list(list(
-                id = list("FREQ"),
+                id = list("FREQUENCY"),
                 coreRepresentation = list(enumeration = list(
                   paste0(
                     "urn:sdmx:org.sdmx.infomodel.codelist",
@@ -454,7 +454,7 @@ test_that("imf_get_codelists propagates args for conceptscheme and codelist", {
   )
 
   out <- imf_get_codelists(
-    "FREQ",
+    "FREQUENCY",
     dataflow_id = "X",
     progress = TRUE,
     max_tries = 7L,
@@ -478,7 +478,7 @@ test_that("imf_get_codelists errors when conceptscheme cannot be resolved", {
       list(
         dimensionList = list(
           dimensions = list(list(
-            id = "FREQ",
+            id = "FREQUENCY",
             conceptIdentity = list(
               paste0(
                 "urn:sdmx:org.sdmx.infomodel.conceptscheme",
@@ -500,7 +500,7 @@ test_that("imf_get_codelists errors when conceptscheme cannot be resolved", {
   )
 
   expect_error(
-    imf_get_codelists("FREQ", dataflow_id = "X"),
+    imf_get_codelists("FREQUENCY", dataflow_id = "X"),
     regexp = "Conceptscheme not found"
   )
 })
@@ -514,7 +514,7 @@ test_that("imf_get_codelists errors when codelist payload missing or empty", {
       list(
         dimensionList = list(
           dimensions = list(list(
-            id = "FREQ",
+            id = "FREQUENCY",
             conceptIdentity = list(
               paste0(
                 "urn:sdmx:org.sdmx.infomodel.conceptscheme",
@@ -540,7 +540,7 @@ test_that("imf_get_codelists errors when codelist payload missing or empty", {
             conceptSchemes = list(
               list(concepts = list(
                 list(
-                  id = list("FREQ"),
+                  id = list("FREQUENCY"),
                   coreRepresentation = list(enumeration = list(
                     paste0(
                       "urn:sdmx:org.sdmx.infomodel.codelist",
@@ -562,45 +562,41 @@ test_that("imf_get_codelists errors when codelist payload missing or empty", {
   )
 
   expect_error(
-    imf_get_codelists("FREQ", dataflow_id = "X"),
+    imf_get_codelists("FREQUENCY", dataflow_id = "X"),
     regexp = "Empty codelists payload"
   )
 })
 
-test_that("imf_get_codelists live smoke test (guarded)", {
-  skip_on_cran()
-  skip_if_offline()
-  skip("Temporarily skipped due to upstream conceptscheme instability")
-  # This will hit the actual API; use a small dimension set
-  out <- imf_get_codelists(
-    c("FREQ"), dataflow_id = "MFS_IR", progress = FALSE,
-    max_tries = 3L, cache = TRUE
-  )
-  expect_s3_class(out, "tbl_df")
-  expect_true(nrow(out) >= 1)
-  expect_true(all(c("dimension_id", "code", "name") %in% names(out)))
-})
-
 test_that("imf_get_codelists validates arguments", {
   # dimension_ids must be non-empty character vector
-  expect_error(imf_get_codelists(character(0), dataflow_id = "X"),
-               regexp = "dimension_ids.*non-empty character vector")
-  expect_error(imf_get_codelists(c("FREQ", NA_character_), dataflow_id = "X"),
-               regexp = "must not contain")
-  expect_error(imf_get_codelists(c("FREQ", "   "), dataflow_id = "X"),
-               regexp = "must not contain")
+  expect_error(
+    imf_get_codelists(character(0), dataflow_id = "X"),
+    regexp = "dimension_ids.*non-empty character vector"
+  )
+  expect_error(
+    imf_get_codelists(c("FREQUENCY", NA_character_), dataflow_id = "X"),
+    regexp = "must not contain"
+  )
+  expect_error(
+    imf_get_codelists(c("FREQUENCY", "   "), dataflow_id = "X"),
+    regexp = "must not contain"
+  )
   # dataflow_id must be non-empty character scalar
-  expect_error(imf_get_codelists("FREQ", dataflow_id = c("A", "B")),
-               regexp = "dataflow_id.*non-empty character scalar")
-  expect_error(imf_get_codelists("FREQ", dataflow_id = "   "),
-               regexp = "dataflow_id.*non-empty character scalar")
+  expect_error(
+    imf_get_codelists("FREQUENCY", dataflow_id = c("A", "B")),
+    regexp = "dataflow_id.*non-empty character scalar"
+  )
+  expect_error(
+    imf_get_codelists("FREQUENCY", dataflow_id = "   "),
+    regexp = "dataflow_id.*non-empty character scalar"
+  )
 })
 
 test_that("conceptscheme agency path fails then all/* succeeds (fallback)", {
   ds_components <- list(
     dimensionList = list(
       dimensions = list(list(
-        id = "FREQ",
+        id = "FREQUENCY",
         conceptIdentity = list(
           "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IMF:CS(1.0.0).FREQ"
         ),
@@ -625,7 +621,7 @@ test_that("conceptscheme agency path fails then all/* succeeds (fallback)", {
       }
       if (grepl("^structure/conceptscheme/all/CS/\\+", resource)) {
         return(list(data = list(conceptSchemes = list(list(concepts = list(
-          list(id = list("FREQ"), coreRepresentation = list(
+          list(id = list("FREQUENCY"), coreRepresentation = list(
             enumeration = list(
               paste0(
                 "urn:sdmx:org.sdmx.infomodel.codelist",
@@ -645,7 +641,7 @@ test_that("conceptscheme agency path fails then all/* succeeds (fallback)", {
     .package = "imfapi"
   )
 
-  out <- imf_get_codelists("FREQ", dataflow_id = "X")
+  out <- imf_get_codelists("FREQUENCY", dataflow_id = "X")
   expect_s3_class(out, "tbl_df")
   expect_true(nrow(out) >= 1)
 })
@@ -654,7 +650,7 @@ test_that("local enum fallback used when concept has no enumeration", {
   ds_components <- list(
     dimensionList = list(
       dimensions = list(list(
-        id = "FREQ",
+        id = "FREQUENCY",
         conceptIdentity = list(
           "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IMF:CS(1.0.0).FREQ"
         ),
@@ -677,7 +673,7 @@ test_that("local enum fallback used when concept has no enumeration", {
       if (grepl("^structure/conceptscheme/", resource)) {
         # Return concept without enumeration to force local enum fallback
         return(list(data = list(conceptSchemes = list(list(concepts = list(
-          list(id = list("FREQ"), coreRepresentation = list())
+          list(id = list("FREQUENCY"), coreRepresentation = list())
         ))))))
       }
       if (grepl("codelist/.*/CL_FREQ", resource)) {
@@ -690,7 +686,7 @@ test_that("local enum fallback used when concept has no enumeration", {
     .package = "imfapi"
   )
 
-  out <- imf_get_codelists("FREQ", dataflow_id = "X")
+  out <- imf_get_codelists("FREQUENCY", dataflow_id = "X")
   expect_s3_class(out, "tbl_df")
   expect_true(nrow(out) == 1)
   expect_identical(out$codelist_id[[1]], "CL_FREQ")
@@ -701,7 +697,7 @@ test_that("error when codelist has NULL codes", {
   ds_components <- list(
     dimensionList = list(
       dimensions = list(list(
-        id = "FREQ",
+        id = "FREQUENCY",
         conceptIdentity = list(
           "urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=IMF:CS(1.0.0).FREQ"
         ),
@@ -723,7 +719,7 @@ test_that("error when codelist has NULL codes", {
     perform_request = function(resource, progress, max_tries, cache, ...) {
       if (grepl("^structure/conceptscheme/", resource)) {
         return(list(data = list(conceptSchemes = list(list(concepts = list(
-          list(id = list("FREQ"), coreRepresentation = list(
+          list(id = list("FREQUENCY"), coreRepresentation = list(
             enumeration = list(
               paste0(
                 "urn:sdmx:org.sdmx.infomodel.codelist",
@@ -742,7 +738,21 @@ test_that("error when codelist has NULL codes", {
   )
 
   expect_error(
-    imf_get_codelists("FREQ", dataflow_id = "X"),
+    imf_get_codelists("FREQUENCY", dataflow_id = "X"),
     regexp = "No codes found in codelist"
   )
+})
+
+test_that("imf_get_codelists returns data (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+  # This will hit the actual API; use a small dimension set
+  out <- imf_get_codelists(
+    c("FREQUENCY"), dataflow_id = "MFS_IR", progress = FALSE,
+    max_tries = 3L, cache = TRUE
+  )
+  expect_s3_class(out, "tbl_df")
+  expect_true(nrow(out) >= 1)
+  expect_true(all(c("dimension_id", "code", "name") %in% names(out)))
 })

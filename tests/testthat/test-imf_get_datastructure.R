@@ -3,7 +3,7 @@ test_that("imf_get_datastructure maps dimensions/time/measures correctly", {
     dimensionList = list(
       dimensions = list(
         list(id = "GEO", type = "Dimension", position = 1L),
-        list(id = "FREQ", type = "Dimension", position = 2L)
+        list(id = "FREQUENCY", type = "Dimension", position = 2L)
       ),
       timeDimensions = list(
         list(id = "TIME_PERIOD", type = "TimeDimension", position = 3L)
@@ -31,7 +31,7 @@ test_that("imf_get_datastructure maps dimensions/time/measures correctly", {
   )
   expect_s3_class(dims_only, "tbl_df")
   expect_equal(nrow(dims_only), 2L)
-  expect_true(all(dims_only$dimension_id %in% c("GEO", "FREQ")))
+  expect_true(all(dims_only$dimension_id %in% c("GEO", "FREQUENCY")))
   expect_true(all(dims_only$type == "Dimension"))
 
   # Include time
@@ -250,15 +250,6 @@ test_that("get_datastructure_components errors when components missing", {
   )
 })
 
-test_that("imf_get_datastructure live smoke (guarded)", {
-  skip_on_cran()
-  skip_if_offline()
-  out <- imf_get_datastructure("MFS_IR", include_time = TRUE)
-  expect_s3_class(out, "tbl_df")
-  expect_true(all(c("dimension_id", "type", "position") %in% names(out)))
-  expect_true(nrow(out) >= 1)
-})
-
 test_that("imf_get_datastructure validates include flags", {
   expect_error(
     imf_get_datastructure("X", include_time = c(TRUE, FALSE)),
@@ -298,4 +289,14 @@ test_that("get_datastructure_components errors on non-unique dataflow rows", {
     get_datastructure_components("D1"),
     regexp = "Dataflow not found or not unique"
   )
+})
+
+test_that("imf_get_datastructure returns data (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+  out <- imf_get_datastructure("MFS_IR", include_time = TRUE)
+  expect_s3_class(out, "tbl_df")
+  expect_true(all(c("dimension_id", "type", "position") %in% names(out)))
+  expect_true(nrow(out) >= 1)
 })
