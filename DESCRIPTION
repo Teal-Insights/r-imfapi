@@ -1,9 +1,9 @@
 Package: imfapi
-Title: Econdataverse IMF API Client
+Title: Econdataverse 'IMF Data API' Client
 Version: 0.1.0
 Authors@R:
     c(person("Teal Insights", email = "lte@tealinsights.com", role = c("aut", "cre", "cph")))
-Description: Provides user-friendly functions for programmatic access to macroeconomic data from the International Monetary Fund's SDMX 3.0 Data API.
+Description: Provides user-friendly functions for programmatic access to macroeconomic data from the International Monetary Fund's 'SDMX 3.0 IMF Data API' <https://data.imf.org/en/Resource-Pages/IMF-API>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
