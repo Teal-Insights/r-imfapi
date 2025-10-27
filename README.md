@@ -36,14 +36,14 @@ imf_get_dataflows() |>
   knitr::kable()
 ```
 
-| id      | name        | description | version | agency  | last_updated |
-|:--------|:------------|:------------|:--------|:--------|:-------------|
-| FSIBSIS | Financial … | The Financ… | 18.0.0  | IMF.STA | 2025-07-01…  |
-| FM      | Fiscal Mon… | The Fiscal… | 5.0.0   | IMF.FAD | 2025-03-28…  |
-| EER     | Effective … | The Effect… | 6.0.0   | IMF.STA | 2025-03-28…  |
-| ITG     | Internatio… | Trade in g… | 4.0.0   | IMF.STA | 2025-03-28…  |
-| IIPCC   | Currency C… | The Curren… | 13.0.0  | IMF.STA | 2025-06-03…  |
-| PSBS    | Public Sec… | The Public… | 2.0.0   | IMF.FAD | 2025-04-23…  |
+| id        | name        | description | version | agency  | last_updated |
+|:----------|:------------|:------------|:--------|:--------|:-------------|
+| CPI_WCA   | Consumer P… | This datas… | 2.0.1   | IMF.STA | 2025-09-23…  |
+| MFS_NSRF  | Monetary a… | The Moneta… | 1.0.3   | IMF.STA | 2025-08-12…  |
+| GFS_BS    | GFS Balanc… | The Govern… | 12.0.0  | IMF.STA | 2025-06-06…  |
+| ANEA      | National E… | This datas… | 6.0.1   | IMF.STA | 2025-03-28…  |
+| GFS_COFOG | GFS Govern… | The Govern… | 11.0.0  | IMF.STA | 2025-06-06…  |
+| BOP       | Balance of… | The Balanc… | 21.0.0  | IMF.STA | 2025-06-03…  |
 
 Choose a dataflow based on its `id`, `name`, and `description`. In this
 example, we’ll use the “PPI” (Producer Price Index) dataflow.
