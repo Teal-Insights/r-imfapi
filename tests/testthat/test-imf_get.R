@@ -375,7 +375,7 @@ test_that("imf_get transforms plain year time periods for all frequencies", {
     start_period = "2019",
     end_period = "2020"
   ))
-  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-01+le:2020-01")
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-M01+le:2020-M01")
 
   # Test weekly frequency (W)
   invisible(imf_get(
@@ -466,14 +466,14 @@ test_that("imf_get preserves already-formatted time periods", {
     .package = "imfapi"
   )
 
-  # Monthly format YYYY-MM
+  # Monthly format YYYY-MM (converted to SDMX format YYYY-MNN)
   invisible(imf_get(
     dataflow_id = "DF",
     dimensions = list(FREQUENCY = "M", COUNTRY = "USA"),
     start_period = "2019-03",
     end_period = "2019-06"
   ))
-  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-03+le:2019-06")
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-M03+le:2019-M06")
 
   # Monthly format YYYY-MNN
   invisible(imf_get(
@@ -681,11 +681,11 @@ test_that("imf_get time filters work for all frequencies (live)", {
 
   expect_s3_class(monthly_formatted, "tbl_df")
   expect_gt(nrow(monthly_formatted), 0)
-  # Should return exactly Jan-Mar 2019
+  # Should return exactly Jan-Mar 2019 (in SDMX format: 2019-M01, etc.)
   expect_true(
     all(
       monthly_formatted$TIME_PERIOD %in%
-        c("2019-01", "2019-02", "2019-03")
+        c("2019-M01", "2019-M02", "2019-M03")
     )
   )
 

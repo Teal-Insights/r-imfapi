@@ -538,10 +538,10 @@ test_that("progress path executes (live)", {
   skip_on_ci()
   skip_if_offline()
   res <- perform_request(
-    resource = "structure/codelist",
+    resource = "structure/dataflow",
     base_url = "https://api.imf.org/external/sdmx/3.0/",
     progress = TRUE,
-    query_params = list(limit = "1")
+    query_params = list(references = "none", offset = "0", limit = "5")
   )
   expect_true(is.list(res))
 })

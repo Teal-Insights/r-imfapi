@@ -59,10 +59,12 @@ blank for wildcard. Time filtering is applied via \code{start_period} and
 \code{end_period} query parameters rather than encoding time into the key.
 }
 \examples{
+\donttest{
 if (curl::has_internet()) {
   imf_get(
     dataflow_id = "FM",  # Fiscal Monitor
     dimensions = list(COUNTRY = c("USA", "CAN"))
   )
+}
 }
 }
