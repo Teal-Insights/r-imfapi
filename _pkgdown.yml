@@ -2,3 +2,7 @@ url: https://teal-insights.github.io/r-imfapi
 template:
   bootstrap: 5
 
+news:
+  releases:
+  - text: "imfapi 0.1.0"
+    href: https://modelingmarkets.substack.com/p/announcing-imfapi-user-friendly-access
