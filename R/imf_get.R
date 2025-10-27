@@ -133,12 +133,54 @@ imf_get <- function(
     attributes = "dsd",
     measures = "all"
   )
+
+  # Helper to transform time periods for API compatibility
+  # The IMF API requires frequency-specific suffixes in time filters
+  transform_period_for_frequency <- function(period, frequency) {
+    if (is.null(period) || !nzchar(period)) return(period)
+
+    # If period already has a suffix (-, Q, M, A, W), leave it alone
+    if (grepl("-|Q|M|W", period)) return(period)
+
+    # Plain year (e.g., "2015") needs frequency-specific suffix
+    if (grepl("^\\d{4}$", period)) {
+      # For annual: append -A1 (or any month/quarter works too)
+      # For quarterly: append -Q1
+      # For monthly: append -01
+      # If frequency is unknown/wildcarded, use -A1 as safe default
+      suffix <- if (!is.null(frequency) && length(frequency) == 1) {
+        switch(toupper(frequency),
+          "A" = "-A1",
+          "Q" = "-Q1",
+          "M" = "-01",
+          "W" = "-W01",
+          "-A1"  # default fallback
+        )
+      } else {
+        "-A1"  # default when frequency is wildcarded
+      }
+      return(paste0(period, suffix))
+    }
+
+    # Otherwise return as-is
+    period
+  }
+
+  # Extract frequency from user's dimension filter (if provided)
+  user_frequency <- norm_dims[["FREQUENCY"]]
+
   time_filters <- character(0)
   if (!is.null(start_period)) {
-    time_filters <- c(time_filters, paste0("ge:", start_period))
+    transformed_start <- transform_period_for_frequency(
+      start_period, user_frequency
+    )
+    time_filters <- c(time_filters, paste0("ge:", transformed_start))
   }
   if (!is.null(end_period)) {
-    time_filters <- c(time_filters, paste0("le:", end_period))
+    transformed_end <- transform_period_for_frequency(
+      end_period, user_frequency
+    )
+    time_filters <- c(time_filters, paste0("le:", transformed_end))
   }
 
   # Determine dataflow agency (owner) using dataflows helper

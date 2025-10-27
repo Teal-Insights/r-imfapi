@@ -70,7 +70,8 @@ test_that("imf_get builds key from DSD positions and applies time filters", {
     recorded$resource, "^data/dataflow/IMF.STA/DF/\\+/a\\.b1\\+b2\\.\\*$",
     perl = TRUE
   )
-  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2000+le:2002")
+  # Plain years are transformed to include -A1 suffix for API compatibility
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2000-A1+le:2002-A1")
   expect_identical(recorded$query$dimensionAtObservation, "TIME_PERIOD")
 })
 
@@ -306,6 +307,287 @@ test_that("imf_get treats NULL dimension value as wildcard", {
   )
 })
 
+test_that("imf_get transforms plain year time periods for all frequencies", {
+  # Test that plain years are transformed based on frequency
+  components <- list(
+    dimensionList = list(
+      dimensions = list(
+        list(id = "COUNTRY", type = "Dimension", position = 0L),
+        list(id = "FREQUENCY", type = "Dimension", position = 1L)
+      ),
+      timeDimensions = list(list(
+        id = "TIME_PERIOD", type = "TimeDimension", position = 2L
+      ))
+    )
+  )
+  flows <- tibble::tibble(
+    id = "DF", agency = "IMF.STA", structure = paste0(
+      "urn:sdmx:org.sdmx.infomodel.datastructure.",
+      "DataStructure=IMF:DSD_DF(1.0.0)"
+    )
+  )
+
+  recorded <- new.env(parent = emptyenv())
+  recorded$query <- NULL
+
+  testthat::local_mocked_bindings(
+    get_datastructure_components = function(
+      dataflow_id, progress, max_tries, cache
+    ) {
+      components
+    },
+    get_dataflows_components = function(progress, max_tries, cache) {
+      flows
+    },
+    perform_request = function(
+      resource, progress, max_tries, cache, query_params
+    ) {
+      recorded$query <- query_params
+      list(data = list(
+        dataSets = list(list(series = list())), structures = list(list())
+      ))
+    },
+    .package = "imfapi"
+  )
+
+  # Test annual frequency (A)
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "A", COUNTRY = "USA"),
+    start_period = "2015",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2015-A1+le:2020-A1")
+
+  # Test quarterly frequency (Q)
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "Q", COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-Q1+le:2020-Q1")
+
+  # Test monthly frequency (M)
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "M", COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-01+le:2020-01")
+
+  # Test weekly frequency (W)
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "W", COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-W01+le:2020-W01")
+
+  # Test semi-annual frequency (S) - should use A1 as fallback
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "S", COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-A1+le:2020-A1")
+
+  # Test daily frequency (D) - should use A1 as fallback
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "D", COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-A1+le:2020-A1")
+
+  # Test wildcarded frequency (no FREQUENCY specified)
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-A1+le:2020-A1")
+
+  # Test multiple frequencies (should use A1 as safe default)
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = c("A", "Q"), COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-A1+le:2020-A1")
+})
+
+test_that("imf_get preserves already-formatted time periods", {
+  # Test that periods with existing suffixes are left unchanged
+  components <- list(
+    dimensionList = list(
+      dimensions = list(
+        list(id = "COUNTRY", type = "Dimension", position = 0L),
+        list(id = "FREQUENCY", type = "Dimension", position = 1L)
+      ),
+      timeDimensions = list(list(
+        id = "TIME_PERIOD", type = "TimeDimension", position = 2L
+      ))
+    )
+  )
+  flows <- tibble::tibble(
+    id = "DF", agency = "IMF.STA", structure = paste0(
+      "urn:sdmx:org.sdmx.infomodel.datastructure.",
+      "DataStructure=IMF:DSD_DF(1.0.0)"
+    )
+  )
+
+  recorded <- new.env(parent = emptyenv())
+  recorded$query <- NULL
+
+  testthat::local_mocked_bindings(
+    get_datastructure_components = function(
+      dataflow_id, progress, max_tries, cache
+    ) {
+      components
+    },
+    get_dataflows_components = function(progress, max_tries, cache) {
+      flows
+    },
+    perform_request = function(
+      resource, progress, max_tries, cache, query_params
+    ) {
+      recorded$query <- query_params
+      list(data = list(
+        dataSets = list(list(series = list())), structures = list(list())
+      ))
+    },
+    .package = "imfapi"
+  )
+
+  # Monthly format YYYY-MM
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "M", COUNTRY = "USA"),
+    start_period = "2019-03",
+    end_period = "2019-06"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-03+le:2019-06")
+
+  # Monthly format YYYY-MNN
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "M", COUNTRY = "USA"),
+    start_period = "2019-M03",
+    end_period = "2019-M06"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-M03+le:2019-M06")
+
+  # Quarterly format YYYY-QN
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "Q", COUNTRY = "USA"),
+    start_period = "2019-Q2",
+    end_period = "2020-Q1"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-Q2+le:2020-Q1")
+
+  # Weekly format YYYY-WNN
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "W", COUNTRY = "USA"),
+    start_period = "2019-W15",
+    end_period = "2019-W20"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-W15+le:2019-W20")
+
+  # Annual format YYYY-AN
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "A", COUNTRY = "USA"),
+    start_period = "2019-A1",
+    end_period = "2020-A1"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-A1+le:2020-A1")
+})
+
+test_that("imf_get handles edge cases in time period transformation", {
+  components <- list(
+    dimensionList = list(
+      dimensions = list(
+        list(id = "COUNTRY", type = "Dimension", position = 0L),
+        list(id = "FREQUENCY", type = "Dimension", position = 1L)
+      ),
+      timeDimensions = list(list(
+        id = "TIME_PERIOD", type = "TimeDimension", position = 2L
+      ))
+    )
+  )
+  flows <- tibble::tibble(
+    id = "DF", agency = "IMF.STA", structure = paste0(
+      "urn:sdmx:org.sdmx.infomodel.datastructure.",
+      "DataStructure=IMF:DSD_DF(1.0.0)"
+    )
+  )
+
+  recorded <- new.env(parent = emptyenv())
+  recorded$query <- NULL
+
+  testthat::local_mocked_bindings(
+    get_datastructure_components = function(
+      dataflow_id, progress, max_tries, cache
+    ) {
+      components
+    },
+    get_dataflows_components = function(progress, max_tries, cache) {
+      flows
+    },
+    perform_request = function(
+      resource, progress, max_tries, cache, query_params
+    ) {
+      recorded$query <- query_params
+      list(data = list(
+        dataSets = list(list(series = list())), structures = list(list())
+      ))
+    },
+    .package = "imfapi"
+  )
+
+  # Test with only start_period (no end_period)
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "A", COUNTRY = "USA"),
+    start_period = "2015"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2015-A1")
+
+  # Test with only end_period (no start_period)
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "A", COUNTRY = "USA"),
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "le:2020-A1")
+
+  # Test with case insensitive frequency codes
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "a", COUNTRY = "USA"),
+    start_period = "2015",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2015-A1+le:2020-A1")
+
+  invisible(imf_get(
+    dataflow_id = "DF",
+    dimensions = list(FREQUENCY = "q", COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020"
+  ))
+  expect_identical(recorded$query$`c[TIME_PERIOD]`, "ge:2019-Q1+le:2020-Q1")
+})
+
 test_that("imf_get returns data within requested time window (live)", {
   skip_on_cran()
   skip_on_ci()
@@ -324,6 +606,109 @@ test_that("imf_get returns data within requested time window (live)", {
 
   expect_s3_class(out, "tbl_df")
   expect_true(all(out$TIME_PERIOD == "2019-M01"))
+})
+
+test_that("imf_get returns annual data with plain year time periods (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+
+  # Test the exact scenario from the bug report
+  out <- imf_get(
+    dataflow_id = "PPI",
+    dimensions = list(FREQUENCY = "A", COUNTRY = "USA"),
+    start_period = "2015",
+    end_period = "2020",
+    progress = FALSE,
+    max_tries = 3L,
+    cache = TRUE
+  )
+
+  expect_s3_class(out, "tbl_df")
+  expect_gt(nrow(out), 0)
+  # Verify all returned periods are within the requested range
+  years <- as.integer(out$TIME_PERIOD)
+  expect_true(all(years >= 2015 & years <= 2020))
+})
+
+test_that("imf_get time filters work for all frequencies (live)", {
+  skip_on_cran()
+  skip_on_ci()
+  skip_if_offline()
+
+  # Test quarterly data with plain years
+  quarterly <- imf_get(
+    dataflow_id = "PPI",
+    dimensions = list(FREQUENCY = "Q", COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020",
+    progress = FALSE,
+    max_tries = 3L,
+    cache = TRUE
+  )
+
+  expect_s3_class(quarterly, "tbl_df")
+  expect_gt(nrow(quarterly), 0)
+  # Verify periods are in the expected format and range
+  expect_true(all(grepl("^(2019|2020)-Q[1-4]$", quarterly$TIME_PERIOD)))
+
+  # Test monthly data with plain years
+  monthly <- imf_get(
+    dataflow_id = "PPI",
+    dimensions = list(FREQUENCY = "M", COUNTRY = "USA"),
+    start_period = "2019",
+    end_period = "2020",
+    progress = FALSE,
+    max_tries = 3L,
+    cache = TRUE
+  )
+
+  expect_s3_class(monthly, "tbl_df")
+  expect_gt(nrow(monthly), 0)
+  # Verify periods are in the expected format
+  expect_true(all(grepl("^(2019|2020)-M", monthly$TIME_PERIOD)))
+
+  # Test monthly data with formatted periods (should also work)
+  monthly_formatted <- imf_get(
+    dataflow_id = "PPI",
+    dimensions = list(FREQUENCY = "M", COUNTRY = "USA"),
+    start_period = "2019-01",
+    end_period = "2019-03",
+    progress = FALSE,
+    max_tries = 3L,
+    cache = TRUE
+  )
+
+  expect_s3_class(monthly_formatted, "tbl_df")
+  expect_gt(nrow(monthly_formatted), 0)
+  # Should return exactly Jan-Mar 2019
+  expect_true(
+    all(
+      monthly_formatted$TIME_PERIOD %in%
+        c("2019-01", "2019-02", "2019-03")
+    )
+  )
+
+  # Test quarterly with formatted periods
+  quarterly_formatted <- imf_get(
+    dataflow_id = "PPI",
+    dimensions = list(FREQUENCY = "Q", COUNTRY = "USA"),
+    start_period = "2019-Q2",
+    end_period = "2019-Q4",
+    progress = FALSE,
+    max_tries = 3L,
+    cache = TRUE
+  )
+
+  expect_s3_class(quarterly_formatted, "tbl_df")
+  expect_gt(nrow(quarterly_formatted), 0)
+  # Should return Q2-Q4 2019
+  expect_true(
+    all(
+      quarterly_formatted$TIME_PERIOD %in%
+        c("2019-Q2", "2019-Q3", "2019-Q4")
+    )
+  )
 })
 
 test_that("Agency time filter support is as expected (live)", {
