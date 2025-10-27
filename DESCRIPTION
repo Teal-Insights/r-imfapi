@@ -1,6 +1,6 @@
 Package: imfapi
 Title: Econdataverse 'IMF Data API' Client
-Version: 0.1.0.9000
+Version: 0.1.1
 Authors@R:
     c(person("Teal Insights", email = "lte@tealinsights.com", role = c("aut", "cre", "cph")))
 Description: Provides user-friendly functions for programmatic access to macroeconomic data from the International Monetary Fund's 'SDMX 3.0 IMF Data API' <https://data.imf.org/en/Resource-Pages/IMF-API>.

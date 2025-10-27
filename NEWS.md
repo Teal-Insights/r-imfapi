@@ -1,4 +1,4 @@
-# imfapi (development version)
+# imfapi 0.1.1
 
 # imfapi 0.1.1
 
