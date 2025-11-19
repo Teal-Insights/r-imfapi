@@ -14,8 +14,10 @@
 #' )
 #'
 #' @examples
+#' \donttest{
 #' if (curl::has_internet()) {
 #'   imf_get_datastructure("PSBS")
+#' }
 #' }
 #' @export
 imf_get_datastructure <- function(
