@@ -22,11 +22,13 @@
 #' )
 #'
 #' @examples
+#' \donttest{
 #' if (curl::has_internet()) {
 #'   imf_get_codelists(
 #'     c("FREQUENCY", "TIME_PERIOD"),
 #'     dataflow_id = "FM"  # Fiscal Monitor
 #'   )
+#' }
 #' }
 #' @export
 imf_get_codelists <- function(

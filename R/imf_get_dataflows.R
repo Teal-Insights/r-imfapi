@@ -16,8 +16,10 @@
 #'   last_updated = character() # from annotations
 #' )
 #' @examples
+#' \donttest{
 #' if (curl::has_internet()) {
 #'   imf_get_dataflows()
+#' }
 #' }
 #' @export
 imf_get_dataflows <- function(progress = FALSE, max_tries = 10L, cache = TRUE) {
