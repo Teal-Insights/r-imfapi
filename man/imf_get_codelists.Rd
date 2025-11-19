@@ -41,10 +41,12 @@ corresponding codelists. By convention, codelist IDs are assumed to be
 \verb{CL_\{dimension_id\}} for first-pass coverage.
 }
 \examples{
+\donttest{
 if (curl::has_internet()) {
   imf_get_codelists(
     c("FREQUENCY", "TIME_PERIOD"),
     dataflow_id = "FM"  # Fiscal Monitor
   )
+}
 }
 }

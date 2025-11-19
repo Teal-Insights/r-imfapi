@@ -37,7 +37,9 @@ position = integer()
 Retrieve the datastructure definition for an IMF dataflow.
 }
 \examples{
+\donttest{
 if (curl::has_internet()) {
   imf_get_datastructure("PSBS")
+}
 }
 }
