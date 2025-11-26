@@ -49,6 +49,7 @@ tibble::tibble( dimension_id = character(), type = character(), position
 ## Examples
 
 ``` r
+# \donttest{
 if (curl::has_internet()) {
   imf_get_datastructure("PSBS")
 }
@@ -61,4 +62,5 @@ if (curl::has_internet()) {
 #> 4 INDICATOR    Dimension        3
 #> 5 UNIT         Dimension        4
 #> 6 FREQUENCY    Dimension        5
+# }
 ```

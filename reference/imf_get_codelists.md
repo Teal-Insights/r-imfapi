@@ -48,6 +48,7 @@ codelist_agency = character(), codelist_version = character() )
 ## Examples
 
 ``` r
+# \donttest{
 if (curl::has_internet()) {
   imf_get_codelists(
     c("FREQUENCY", "TIME_PERIOD"),
@@ -64,4 +65,5 @@ if (curl::has_internet()) {
 #> 5 FREQUENCY    S     Half-yearly, semes… To be used… CL_FREQ     IMF            
 #> 6 FREQUENCY    W     Weekly              To be used… CL_FREQ     IMF            
 #> # ℹ 1 more variable: codelist_version <chr>
+# }
 ```

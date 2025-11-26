@@ -34,10 +34,11 @@ annotations )
 ## Examples
 
 ``` r
+# \donttest{
 if (curl::has_internet()) {
   imf_get_dataflows()
 }
-#> # A tibble: 71 × 6
+#> # A tibble: 72 × 6
 #>    id                  name              description version agency last_updated
 #>    <chr>               <chr>             <chr>       <chr>   <chr>  <chr>       
 #>  1 GDD                 Global Debt Data… "The Globa… 2.0.0   IMF.F… 2025-04-16T…
@@ -50,5 +51,6 @@ if (curl::has_internet()) {
 #>  8 MFS_OFC             Monetary and Fin… "The Monet… 6.0.1   IMF.S… 2025-08-12T…
 #>  9 EQ                  Export Quality (… "This data… 2.0.0   IMF.R… 2025-03-29T…
 #> 10 ISORA_2016_DATA_PUB ISORA 2016 Data   "ISORA dat… 2.0.0   ISORA  2025-06-19T…
-#> # ℹ 61 more rows
+#> # ℹ 62 more rows
+# }
 ```

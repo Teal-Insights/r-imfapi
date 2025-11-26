@@ -1,6 +1,11 @@
 # Changelog
 
-## imfapi (development version)
+## imfapi 0.1.2
+
+CRAN release: 2025-11-19
+
+- Examples that make 3rd-party API calls now skip CRAN tests to avoid
+  CRAN check failures.
 
 ## imfapi 0.1.1
 
