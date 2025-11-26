@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/Teal-Insights/r-imfapi/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/Teal-Insights/r-imfapi/blob/v0.1.2/DESCRIPTION)
 
 Christopher C. Smith (2025). *imfapi: Econdataverse 'IMF Data API'
 Client*. R package version 0.1.2,
