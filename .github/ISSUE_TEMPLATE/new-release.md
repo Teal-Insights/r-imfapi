@@ -13,7 +13,7 @@ Prepare for release:
 - [ ] `git pull`
 - [ ] `gh issue develop <issue_number> --checkout`
 - [ ] `usethis::use_version('patch')`
-- [ ] Check [current CRAN check results](https://cran.rstudio.org/web/checks/check_results_wbids.html)
+- [ ] Check [current CRAN check results](https://cran.rstudio.org/web/checks/check_results_imfapi.html)
 - [ ] [Polish NEWS](https://style.tidyverse.org/news.html#news-release)
 - [ ] `usethis::use_github_links()` (only for initial releases)
 - [ ] `urlchecker::url_check()` (you will need pandoc installed on your OS to perform this step)
