@@ -51,18 +51,36 @@ get_dataflows_components <- function(
 
   purrr::map_dfr(raw_dataflows, function(dataflow) {
     tibble::tibble(
-      id = dataflow$id[[1]],
-      name = dataflow$name[[1]],
-      description = dataflow$description[[1]],
-      version = dataflow$version[[1]],
-      agency = dataflow$agencyID[[1]],
-      structure = dataflow$structure[[1]],
-      last_updated = dataflow$annotations[[which(
-        vapply(
-          dataflow$annotations,
-          function(x) "lastUpdatedAt" %in% x$id, logical(1)
-        )
-      )]]$value[[1]]
+      id = first_scalar(dataflow$id),
+      name = first_scalar(dataflow$name),
+      description = first_scalar(dataflow$description),
+      version = first_scalar(dataflow$version),
+      agency = first_scalar(dataflow$agencyID),
+      structure = first_scalar(dataflow$structure),
+      last_updated = extract_last_updated(dataflow$annotations)
+
     )
   })
 }
+
+#' Extract the `lastUpdatedAt` annotation value from a list of annotations
+#'
+#' Returns `NA_character_` when the annotation list is absent or contains no
+#' `lastUpdatedAt` entry, rather than erroring.
+#'
+#' @keywords internal
+#' @noRd
+extract_last_updated <- function(annotations) {
+  if (is.null(annotations) || length(annotations) == 0) {
+    return(NA_character_)
+  }
+  matches <- which(vapply(
+    annotations,
+    function(x) "lastUpdatedAt" %in% x$id, logical(1)
+  ))
+  if (length(matches) == 0) {
+    return(NA_character_)
+  }
+  first_scalar(annotations[[matches[[1]]]]$value)
+}
+
