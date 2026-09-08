@@ -83,4 +83,3 @@ extract_last_updated <- function(annotations) {
   }
   first_scalar(annotations[[matches[[1]]]]$value)
 }
-
