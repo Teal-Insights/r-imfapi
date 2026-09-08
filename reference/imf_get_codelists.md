@@ -55,15 +55,20 @@ if (curl::has_internet()) {
     dataflow_id = "FM"  # Fiscal Monitor
   )
 }
-#> # A tibble: 6 × 7
-#>   dimension_id code  name                description codelist_id codelist_agency
-#>   <chr>        <chr> <chr>               <chr>       <chr>       <chr>          
-#> 1 FREQUENCY    A     Annual              To be used… CL_FREQ     IMF            
-#> 2 FREQUENCY    D     Daily               To be used… CL_FREQ     IMF            
-#> 3 FREQUENCY    M     Monthly             To be used… CL_FREQ     IMF            
-#> 4 FREQUENCY    Q     Quarterly           To be used… CL_FREQ     IMF            
-#> 5 FREQUENCY    S     Half-yearly, semes… To be used… CL_FREQ     IMF            
-#> 6 FREQUENCY    W     Weekly              To be used… CL_FREQ     IMF            
+#> # A tibble: 34 × 7
+#>    dimension_id code  name               description codelist_id codelist_agency
+#>    <chr>        <chr> <chr>              <chr>       <chr>       <chr>          
+#>  1 FREQUENCY    A     Annual             To be used… CL_FREQ     IMF            
+#>  2 FREQUENCY    D     Daily              To be used… CL_FREQ     IMF            
+#>  3 FREQUENCY    M     Monthly            To be used… CL_FREQ     IMF            
+#>  4 FREQUENCY    Q     Quarterly          To be used… CL_FREQ     IMF            
+#>  5 FREQUENCY    S     Half-yearly, seme… To be used… CL_FREQ     IMF            
+#>  6 FREQUENCY    W     Weekly             To be used… CL_FREQ     IMF            
+#>  7 FREQUENCY    A2    Biennial           To be used… CL_FREQ     IMF            
+#>  8 FREQUENCY    A3    Triennial          To be used… CL_FREQ     IMF            
+#>  9 FREQUENCY    A4    Quadrennial        To be used… CL_FREQ     IMF            
+#> 10 FREQUENCY    A5    Quinquennial       To be used… CL_FREQ     IMF            
+#> # ℹ 24 more rows
 #> # ℹ 1 more variable: codelist_version <chr>
 # }
 ```

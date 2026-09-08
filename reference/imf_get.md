@@ -86,19 +86,6 @@ if (curl::has_internet()) {
     dimensions = list(COUNTRY = c("USA", "CAN"))
   )
 }
-#> # A tibble: 552 × 5
-#>    COUNTRY INDICATOR         FREQUENCY TIME_PERIOD OBS_VALUE
-#>    <chr>   <chr>             <chr>     <chr>           <dbl>
-#>  1 CAN     CAB_S13_POPGDP_PT A         1991           -7.61 
-#>  2 CAN     CAB_S13_POPGDP_PT A         1992           -8.07 
-#>  3 CAN     CAB_S13_POPGDP_PT A         1993           -8.05 
-#>  4 CAN     CAB_S13_POPGDP_PT A         1994           -7.08 
-#>  5 CAN     CAB_S13_POPGDP_PT A         1995           -5.58 
-#>  6 CAN     CAB_S13_POPGDP_PT A         1996           -2.44 
-#>  7 CAN     CAB_S13_POPGDP_PT A         1997            0.315
-#>  8 CAN     CAB_S13_POPGDP_PT A         1998            0.346
-#>  9 CAN     CAB_S13_POPGDP_PT A         1999            1.29 
-#> 10 CAN     CAB_S13_POPGDP_PT A         2000            1.70 
-#> # ℹ 542 more rows
+#> # A tibble: 0 × 0
 # }
 ```

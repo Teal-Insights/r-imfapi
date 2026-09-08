@@ -1,5 +1,15 @@
 # Changelog
 
+## imfapi (development version)
+
+- [`imf_get()`](https://teal-insights.github.io/r-imfapi/reference/imf_get.md),
+  [`imf_get_codelists()`](https://teal-insights.github.io/r-imfapi/reference/imf_get_codelists.md),
+  [`imf_get_datastructure()`](https://teal-insights.github.io/r-imfapi/reference/imf_get_datastructure.md),
+  and
+  [`imf_get_dataflows()`](https://teal-insights.github.io/r-imfapi/reference/imf_get_dataflows.md)
+  no longer fail when a dataflow is missing a description or
+  last-updated annotation.
+
 ## imfapi 0.1.2
 
 CRAN release: 2025-11-19

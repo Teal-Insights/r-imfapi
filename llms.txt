@@ -3,12 +3,14 @@
 ## Installation
 
 ``` r
+
 install.packages("imfapi")
 ```
 
 ## Usage
 
 ``` r
+
 library(imfapi)
 ```
 
@@ -21,6 +23,7 @@ Start by listing all available IMF datasets (dataflows) to find the one
 you need:
 
 ``` r
+
 imf_get_dataflows() |>
   head() |>
   # Note: We use a custom helper function to truncate long strings in columns
@@ -48,6 +51,7 @@ filter on. Use
 to see what dimensions are available:
 
 ``` r
+
 imf_get_datastructure(
   "PPI", include_time = TRUE, include_measures = TRUE
 ) |>
@@ -73,20 +77,21 @@ For any dimension you want to filter, retrieve its codelist to see the
 valid codes you can use:
 
 ``` r
+
 imf_get_codelists(dimension_ids = c("COUNTRY"), dataflow_id = "PPI") |>
   head() |>
   truncate_text(max_chars = 10) |>
   knitr::kable()
 ```
 
-| dimension_id | code | name        | description | codelist_id | codelist_agency | codelist_version |
-|:-------------|:-----|:------------|:------------|:------------|:----------------|:-----------------|
-| COUNTRY      | AFG  | Afghanista… | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | ALB  | Albania     | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | DZA  | Algeria     | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | ASM  | American S… | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | AND  | Andorra, P… | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | AGO  | Angola      | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
+| dimension_id | code | name | description | codelist_id | codelist_agency | codelist_version |
+|:---|:---|:---|:---|:---|:---|:---|
+| COUNTRY | AFG | Afghanista… | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | ALB | Albania | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | DZA | Algeria | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | ASM | American S… | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | AND | Andorra, P… | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | AGO | Angola | NA | CL_COUNTRY | IMF | 1.0+.0 |
 
 The `code` column shows the values you’ll use in your filters (e.g.,
 “USA”, “CAN”). The `name` column provides human-readable labels. You can
@@ -102,6 +107,7 @@ each name is a `dimension_id` and each value is a character vector of
 codes:
 
 ``` r
+
 imf_get(
   dataflow_id = "PPI",
   dimensions = list(FREQUENCY = c("A"), COUNTRY = c("USA", "CAN"))
