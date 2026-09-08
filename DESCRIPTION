@@ -1,6 +1,6 @@
 Package: imfapi
 Title: Econdataverse 'IMF Data API' Client
-Version: 0.1.2.9000
+Version: 0.1.3
 Authors@R:
     c(
         person("Teal Insights", email = "lte@tealinsights.com", role = c("cre", "cph")),

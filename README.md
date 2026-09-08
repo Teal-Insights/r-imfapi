@@ -38,12 +38,12 @@ imf_get_dataflows() |>
 
 | id          | name        | description | version | agency  | last_updated |
 |:------------|:------------|:------------|:--------|:--------|:-------------|
-| ISORA_2018… | ISORA 2018… | ISORA data… | 2.0.0   | ISORA   | 2025-06-19…  |
-| MFS_DC      | Monetary a… | The Moneta… | 7.0.1   | IMF.STA | 2025-08-13…  |
-| FA          | Fund Accou… | The Fund A… | 8.0.0   | IMF.STA | 2025-03-28…  |
-| DIP         | Direct Inv… | The Dire…   | 12.0.0  | IMF.STA | 2025-03-28…  |
-| PI          | Production… | The Produc… | 2.0.0   | IMF.STA | 2025-03-28…  |
-| PSBS        | Public Sec… | The Public… | 2.0.0   | IMF.FAD | 2025-04-23…  |
+| GFS_SSUC    | GFS Statem… | The Govern… | 10.0.0  | IMF.STA | 2025-06-06…  |
+| FSICDM      | Financial … | The Financ… | 7.0.0   | IMF.STA | 2025-05-07…  |
+| QNEA        | National E… | This datas… | 7.0.0   | IMF.STA | 2025-03-28…  |
+| PI_2026_JA… | Production… | Production… | 1.0.0   | IMF.STA | 2026-02-05…  |
+| MFS_MA_202… | Monetary a… | Monetary a… | 1.0.0   | IMF.STA | 2026-02-09…  |
+| FDI         | Financial … | The datase… | 1.0.0   | IMF.MCM | 2025-07-03…  |
 
 Choose a dataflow based on its `id`, `name`, and `description`. In this
 example, we’ll use the “PPI” (Producer Price Index) dataflow.
@@ -86,14 +86,14 @@ imf_get_codelists(dimension_ids = c("COUNTRY"), dataflow_id = "PPI") |>
   knitr::kable()
 ```
 
-| dimension_id | code | name        | description | codelist_id | codelist_agency | codelist_version |
-|:-------------|:-----|:------------|:------------|:------------|:----------------|:-----------------|
-| COUNTRY      | AFG  | Afghanista… | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | ALB  | Albania     | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | DZA  | Algeria     | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | ASM  | American S… | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | AND  | Andorra, P… | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
-| COUNTRY      | AGO  | Angola      | NA          | CL_COUNTRY  | IMF             | 1.0+.0           |
+| dimension_id | code | name | description | codelist_id | codelist_agency | codelist_version |
+|:---|:---|:---|:---|:---|:---|:---|
+| COUNTRY | AFG | Afghanista… | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | ALB | Albania | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | DZA | Algeria | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | ASM | American S… | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | AND | Andorra, P… | NA | CL_COUNTRY | IMF | 1.0+.0 |
+| COUNTRY | AGO | Angola | NA | CL_COUNTRY | IMF | 1.0+.0 |
 
 The `code` column shows the values you’ll use in your filters (e.g.,
 “USA”, “CAN”). The `name` column provides human-readable labels. You can

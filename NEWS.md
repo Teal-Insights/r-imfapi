@@ -1,6 +1,8 @@
-# imfapi (development version)
+# imfapi 0.1.3
 
-* `imf_get()`, `imf_get_codelists()`, `imf_get_datastructure()`, and `imf_get_dataflows()` no longer fail when a dataflow is missing a description or last-updated annotation.
+* `imf_get()`, `imf_get_codelists()`, `imf_get_datastructure()`, and
+  `imf_get_dataflows()` no longer fail when a dataflow is missing a description
+  or last-updated annotation (#30).
 
 # imfapi 0.1.2
 
