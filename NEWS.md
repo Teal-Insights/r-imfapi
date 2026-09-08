@@ -1,3 +1,7 @@
+# imfapi (development version)
+
+* `imf_get()`, `imf_get_codelists()`, `imf_get_datastructure()`, and `imf_get_dataflows()` no longer fail when a dataflow is missing a description or last-updated annotation.
+
 # imfapi 0.1.2
 
 * Examples that make 3rd-party API calls now skip CRAN tests to avoid CRAN check failures.

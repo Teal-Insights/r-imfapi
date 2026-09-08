@@ -143,3 +143,57 @@ test_that("imf_get_dataflows returns tibble with expected columns (live)", {
   ))
   expect_false("structure" %in% names(out))
 })
+
+test_that("imf_get_dataflows tolerates dataflows with missing fields", {
+  mock_body <- list(data = list(dataflows = list(
+    list(
+      id = list("COMPLETE"),
+      name = list("Complete dataflow"),
+      description = list("Has every field"),
+      version = list("1.0.0"),
+      agencyID = list("IMF"),
+      structure = list("urn:complete"),
+      annotations = list(list(
+        id = list("lastUpdatedAt"), value = list("2025-01-01T00:00:00Z")
+      ))
+    ),
+    # No description, and annotations without a lastUpdatedAt entry
+    list(
+      id = list("NO_DESCRIPTION"),
+      name = list("Undescribed dataflow"),
+      version = list("1.0.0"),
+      agencyID = list("IMF"),
+      structure = list("urn:no_description"),
+      annotations = list(list(id = list("foo"), value = list("bar")))
+    ),
+    # No annotations element at all
+    list(
+      id = list("NO_ANNOTATIONS"),
+      name = list("Unannotated dataflow"),
+      description = list("Has no annotations"),
+      version = list("1.0.0"),
+      agencyID = list("IMF"),
+      structure = list("urn:no_annotations")
+    )
+  )))
+
+  testthat::local_mocked_bindings(
+    perform_request = function(resource, progress, max_tries, cache, ...) {
+      mock_body
+    },
+    .package = "imfapi"
+  )
+
+  out <- imf_get_dataflows()
+
+  expect_equal(nrow(out), 3L)
+  expect_identical(out$id, c("COMPLETE", "NO_DESCRIPTION", "NO_ANNOTATIONS"))
+  expect_identical(
+    out$description,
+    c("Has every field", NA_character_, "Has no annotations")
+  )
+  expect_identical(
+    out$last_updated,
+    c("2025-01-01T00:00:00Z", NA_character_, NA_character_)
+  )
+})
